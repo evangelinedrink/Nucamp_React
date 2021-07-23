@@ -1,25 +1,21 @@
-import logo from './logo.svg';
+import React, {Component} from "react";
+import {Navbar, NavbarBrand} from "reactstrap";
+//import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  render() { //When we are using (rendering) React components, the syntax will look like HTML or JSX tags with the angle brackets, <>. React components are capitalized, so Navbar and NavbarBarnd are React components.
+    return (
+      <div className= "App">
+        <Navbar dark color="primary"> {/*Creating a Navbar to be seen on the website. */}
+          <div className="container">
+            <NavbarBrand href="/">NuCamp</NavbarBrand>
+          </div>
+        </Navbar>
+      </div>
+    );
+  }
 }
+
 
 export default App;
