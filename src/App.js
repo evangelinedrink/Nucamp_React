@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Navbar, NavbarBrand} from "reactstrap";
-//import logo from './logo.svg';
+import Directory from "./components/DirectoryComponent"; //importing the Directory Component
 import './App.css';
 
 class App extends Component {
@@ -12,6 +12,7 @@ class App extends Component {
             <NavbarBrand href="/">NuCamp</NavbarBrand>
           </div>
         </Navbar>
+        <Directory /> {/*Rendering (displaying) the Directory Component on the web page */}
       </div>
     );
   }
