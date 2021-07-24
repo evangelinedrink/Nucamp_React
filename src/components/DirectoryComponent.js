@@ -1,5 +1,6 @@
 import React, {Component} from "react"; //Importing React and Component
 import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from "reactstrap"; //Importing ReactStrap Card component
+import CampsiteInfo from "./CampsiteInfoComponent"; //Importing the CampsiteInfo component into this DirectoryComponent
 //Creating the Directory Component (which is a React component). This is a child class because we have typed "extends Component", meaning this is a child class for Component.
 class Directory extends Component {
     //Constructor is not required for Class Component. Constructor is needed for 
@@ -16,23 +17,6 @@ class Directory extends Component {
         this.setState({selectedCampsite: campsite}); //In React, we never want to update the state directly
     }
     
-    //This method will display the selected campsite details to be viewed on the web page 
-    renderSelectedCampsite(campsite) {
-        if (campsite) {//Makes sure that the campsite has an Object in it because campsite=true if there is an Object in campsite and camspte=false if there is no Object in campsite.
-            return (
-                <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/}
-                    <CardImg top src={campsite.image} alt={campsite.name} />
-                    <CardBody>
-                        <CardTitle>{campsite.name}</CardTitle>
-                        <CardText>{campsite.description}</CardText>
-                    </CardBody>
-                </Card>
-            );
-        }
-        //Outside of the if() block, a return will return an empty <div/> if the campsite = false (null) because campsite didn't have an object in it.
-        return <div />;
-    }
-
     //In a Class Component, you need to wrap your return statement in a render() method
     render() { //Render method must have a return inside of it and the return must have a single React element. 
         //Creating a directory variable that will contain an array of elements. directory variable is going to get the Objects from the CAMPSITES array. Since the CAMPSITES array is being passed in as props (it is no longer data located in the constructor of the Directory Component), we have to change the "state" into "props". 
@@ -59,16 +43,14 @@ class Directory extends Component {
                     {directory} {/*Using a JavaScript variable. To do this in JSX, you must use curly braces, {}. This {directory} variable is different than the Directory component (remember, JavaScript is case-sensitive) */}
                 </div>
 
-                {/*This will display the selected campsite inside of a Card component in the actual website since this information will go to the App Component (parent component) */}
-                <div className="row">
-                    <div className="col-md-5 m-1">
-                        {this.renderSelectedCampsite(this.state.selectedCampsite)} {/*Passing in the campsite object that is stored in the selected campsite projerty of state. */}
-                    </div>
-                </div>
+                <CampsiteInfo campsite={this.state.selectedCampsite}/> {/*Calling the CampsiteInfo component. Passing in the attribute campsite={this.state.selectedCampsite} as props to this CampsiteInfo component */}
+                
             </div>
         );
     }
 }
+
+
 
 
 export default Directory;
