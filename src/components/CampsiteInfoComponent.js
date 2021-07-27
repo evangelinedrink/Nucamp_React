@@ -50,12 +50,14 @@ class CampsiteInfo extends Component {
           //We are only returning one item because if this.props.campsite is true or false, only one thing will show.
                 if(this.props.campsite) { //Checking to see if the "campsite" props is truth (not null, nor undefined). We don't need curly braces because this is JavaScript, not JSX yet.
                     return (  
-                        <div className="row"> {/*In JSX, can only have one element */}
-                            {/*Calling the renderCampsite method and passing campsite into it. We need curly braces because the things inside of the return is in JSX. If we have JavaScript in JSX, we need curly braces.*/}
-                            {this.renderCampsite(this.props.campsite)}
-                            
-                            {/* Calling the renderComments method and pasing in the campsite object's comments array (it is passing in as an attribute). The comments array data will be the variable comments in the renderComments() method on line 21. */}
-                            {this.renderComments(this.props.campsite.comments)} {/*Since comments is within the campsite object, we have to use this.props.campsite.comments */}
+                        <div className= "container"> {/*The "container" ensures that our selected campsite will be alligned with the list of campsites that are being rendered in the DirectoryComponent.js file. Container keeps things alligned in their box. */}
+                            <div className="row"> {/*In JSX, can only have one element */}
+                                {/*Calling the renderCampsite method and passing campsite into it. We need curly braces because the things inside of the return is in JSX. If we have JavaScript in JSX, we need curly braces.*/}
+                                {this.renderCampsite(this.props.campsite)}
+                                
+                                {/* Calling the renderComments method and pasing in the campsite object's comments array (it is passing in as an attribute). The comments array data will be the variable comments in the renderComments() method on line 21. */}
+                                {this.renderComments(this.props.campsite.comments)} {/*Since comments is within the campsite object, we have to use this.props.campsite.comments */}
+                            </div>
                         </div>                 
                     ); 
                 } else {

@@ -1,21 +1,18 @@
+//Directory Component is going to be a Presentational Component (it will not hold any State Data)
 import React, {Component} from "react"; //Importing React and Component
-import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from "reactstrap"; //Importing ReactStrap Card component
-import CampsiteInfo from "./CampsiteInfoComponent"; //Importing the CampsiteInfo component into this DirectoryComponent
+import {Card, CardImg, CardImgOverlay, CardTitle} from "reactstrap"; //Importing ReactStrap Card component
 //Creating the Directory Component (which is a React component). This is a child class because we have typed "extends Component", meaning this is a child class for Component.
 class Directory extends Component {
     //Constructor is not required for Class Component. Constructor is needed for 
     constructor(props) { //props is an import keyword in React. Whenever you create a Class Component in React, you must include the argument "props", which is short for properties
         super(props); //super(props) takes the properties from the parent class and imports in into this child class. Whenever you have constructor(props), you must have super(props) as the very first line in the constructor method (this is required in React).
         this.state= { //This is a property named state. The state property is a special property in React that only needs to hold an Object.
-            selectedCampsite: null, //Will keep track of whatever campsite was selected by the user. Null represents that nothing was selected.
+            
+            
         }; 
     }
 
-    //This method that will run whenever a campsite is clicked on. campsite object will get passed into this method.
-    onCampsiteSelect(campsite) {
-        //this.setState will change the value of the campsite's property of state (default it is null)
-        this.setState({selectedCampsite: campsite}); //In React, we never want to update the state directly
-    }
+
     
     //In a Class Component, you need to wrap your return statement in a render() method
     render() { //Render method must have a return inside of it and the return must have a single React element. 
@@ -24,7 +21,7 @@ class Directory extends Component {
             return ( //This return is only used for this arrow function. What it will do is get each campsite object from the campsites array and return it.
                 //To render an array of elements most efficiently, add a unique key attribute to the topmost element in each array item.
                 <div key={campsite.id} className="col-md-5 m-1"> {/*This is JSX, so we use "className" */}
-                    <Card onClick={() => this.onCampsiteSelect(campsite)}> {/*When the user clicks on the Card element, the onCampsiteSelect will start running. This is an event handler. We use an onClick handler, which is a React component, to do this. */}
+                    <Card onClick={() => this.props.onClick(campsite.id)}> {/*When the user clicks on the Card element, the onCampsiteSelect will start running. This is an event handler. We use an onClick handler, which is a React component, to do this. Since we passed in the onClick event handler as a prop to this file (the state of the onClick event handler is in the MainComponent.js file), this is why we have this.props instead of this.state */}
                         <CardImg width="100%" src={campsite.image} alt={campsite.name} />
                         <CardImgOverlay>
                             <CardTitle>{campsite.name}</CardTitle>
@@ -43,7 +40,6 @@ class Directory extends Component {
                     {directory} {/*Using a JavaScript variable. To do this in JSX, you must use curly braces, {}. This {directory} variable is different than the Directory component (remember, JavaScript is case-sensitive) */}
                 </div>
 
-                <CampsiteInfo campsite={this.state.selectedCampsite}/> {/*Calling the CampsiteInfo component. Passing in the attribute campsite={this.state.selectedCampsite} as props to this CampsiteInfo component */}
                 
             </div>
         );
