@@ -1,4 +1,5 @@
 //MainComponent.js is a Container component that will sit below the App.js component.
+//Presentation Content (the visual content) is now in the MainComponent.js file. Remember that we don't have to have strictly Presentational and Container Components, they can be a blend of both.
 import React, {Component} from "react";
 import {Navbar, NavbarBrand} from "reactstrap";
 import Directory from "./DirectoryComponent"; //importing the Directory Component. The ./ means to stay in the same folder.
