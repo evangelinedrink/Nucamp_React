@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from "reactstrap"; //Importing ReactStrap Card Component
 
+//CampsiteInfo Class component is going to be split up into three Functional Components (one for each of the methods that were in the Class Component)
+
 class CampsiteInfo extends Component {
     //This renderCampsite method is being defined in lines 6-18. Its parameter, campsite, has been defined in the render() method in line 54. The parameter named campsite = this.props.campsite. This is why we don't have to write this.props.campsite here to get the campsite data.
     renderCampsite(campsite) { //campsite is this method's only parameter in its parameter list
