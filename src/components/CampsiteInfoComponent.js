@@ -6,7 +6,7 @@ import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from "reac
 
 //RenderCampsite Functional Component. campsite is a property of props, but it is destructured using the Object Destructuring.
 //Its parameter, campsite, has been defined in the render() method in line 54. The parameter named campsite = this.props.campsite. This is why we don't have to write this.props.campsite here to get the campsite data.
-function RenderCampsite({campsite}) { //campsite is this Functional Component's only parameter in its parameter list
+function RenderCampsite({campsite}) { //campsite is this Functional Component's only parameter in its parameter list. Curly braces destructures it, so that we don't need the name of the parameter (in this case it is campsite)
     return (
         <div className="col-md-5 m-1">
             <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/}
@@ -19,6 +19,36 @@ function RenderCampsite({campsite}) { //campsite is this Functional Component's 
         </div>
     )
 }
+
+/* Different ways to pass parameters in as props 
+function RenderCampsite(props) { //campsite is this Functional Component's only parameter in its parameter list
+    return (
+        <div className="col-md-5 m-1">
+            <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/
+             /*   <CardImg top src={props.campsite.image} alt={props.campsite.name} />
+                <CardBody>
+                    <CardTitle>{props.campsite.name}</CardTitle>
+                    <CardText>{props.campsite.description}</CardText>
+                </CardBody>
+            </Card>
+        </div>
+    )
+}
+
+function RenderCampsite(campsite) { //campsite is this Functional Component's only parameter in its parameter list
+    return (
+        <div className="col-md-5 m-1">
+            <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/
+ /*               <CardImg top src={campsite.campsite.image} alt={campsite.campsite.name} />
+                <CardBody>
+                    <CardTitle>{campsite.campsite.name}</CardTitle>
+                    <CardText>{campsite.campsite.description}</CardText>
+                </CardBody>
+            </Card>
+        </div>
+    )
+}
+*/
 
 //RenderComments Functional Method. Its parameter, {comments}, has been destructured. comments has been defined in the render() method by using comments = this.props.campsite.comments. This is why we don't have to write this.props.campsites.comments here to get the comments data.
 function RenderComments({comments}) { //Takes the comments array stored in the campsite object as a parameter, thus renderComments(comments)

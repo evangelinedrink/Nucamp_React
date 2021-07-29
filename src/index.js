@@ -5,6 +5,8 @@ import reportWebVitals from './reportWebVitals';
 import "bootstrap/dist/css/bootstrap.min.css"; //Importing Bootstrap
 import "typeface-lobster"; //Importing fonts
 import "typeface-open-sans"; //Importing fonts
+import "font-awesome/css/font-awesome.css"; //Importing Font Awesome
+import "bootstrap-social/bootstrap-social.css"; //Importing Bootstrap
 import App from './App';
 
 
