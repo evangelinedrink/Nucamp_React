@@ -7,13 +7,17 @@ function About(props) {
 
     const partners = props.partners.map(partner => {
         return (
-            <h5>{partner.name}</h5>
+            <Media tag="li" key={partner.id}>
+                {/*Rendering the RenderPartner component in this Media component.  */}
+                {/*We are passing in the current partner object as a prop to the RenderPartner component. The name of this partner object is "partner" (its name is to the left of the equal sign). We dont have to call it partner, we could call it props, but in RenderPartners function, we would be destructuring props and not partners (tried this and it works) */}
+                <RenderPartner partner={partner} />
+            </Media>
         );
     });
 
     //RenderPartner Functional Component. Desconstruct a property named partner from the props object that is being passed into this RenderPartner Functional component
     function RenderPartner({partner}) {
-        if(partner) { //Checks to see if the partner object contains a truthy value
+        if(partner) { //Checks to see if the partner object contains a truthy value. Variable that is declared but not assigned (does not have a values attached to it), will be considered undefined and an undefined value is considered falsy. This is why we can just place the name (variable) of the object to test if it is truthy (has values) or is undefined (falsy).
             return(
                 <React.Fragment>
                     {/*Self-Closing Media component */}
