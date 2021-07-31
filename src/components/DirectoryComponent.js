@@ -5,11 +5,10 @@ import {Card, CardImg, CardImgOverlay, CardTitle} from "reactstrap"; //Importing
 //The Directory Class Component will be turned into two smaller Functional Components
 //RenderDirectoryItem Functional Component will be responsible for rendering each card with different campsite details
 //Functional Components always receive any data passed to them as properties of a single props object. In that props object, is passed in as the only argument. In the example below, we are destructuring the props object (seen in the code below). 
-function RenderDirectoryItem({campsite,onClick}) {
+function RenderDirectoryItem({campsite}) {
     //Functional Component has no constructor method, nor a render method. Functional Components only have a return statement.
     return (
-        /*Since we destructured campsite and onClick in the function's parameter list, we don't use this.props in the line below */
-        <Card onClick={() => onClick(campsite.id)}> {/*When the user clicks on the Card element, the onCampsiteSelect will start running. This is an event handler. We use an onClick handler, which is a React component, to do this. Since we passed in the onClick event handler as a prop to this file (the state of the onClick event handler is in the MainComponent.js file). */}
+        <Card> 
             <CardImg width="100%" src={campsite.image} alt={campsite.name} />
             <CardImgOverlay>
                 <CardTitle>{campsite.name}</CardTitle>
@@ -27,8 +26,8 @@ function Directory(props) {
         return ( //This return is only used for this arrow function. What it will do is get each campsite object from the campsites array and return it.
             //To render an array of elements most efficiently, add a unique key attribute to the topmost element in each array item.
             <div key={campsite.id} className="col-md-5 m-1"> {/*This is JSX, so we use "className" */}
-                {/*Calling in the RenderDirectoryItem Functional Component. We are passing in the campsite and the onClick props */}
-                <RenderDirectoryItem campsite={campsite} onClick={props.onClick} />
+                {/*Calling in the RenderDirectoryItem Functional Component. We are passing in the campsite props */}
+                <RenderDirectoryItem campsite={campsite} />
             </div>           
         );
     });

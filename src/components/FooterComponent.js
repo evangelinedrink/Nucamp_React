@@ -1,6 +1,6 @@
 //Footer Component is going to be a Functional Component.
-
 import React from "react"; //Importing React
+import {Link} from "react-router-dom"; //Importing the Link component (this creates links to a path to take the user) 
 
 function Footer(props) {
     return (
@@ -11,10 +11,12 @@ function Footer(props) {
                     <div className="col-4 col-sm-2 offset-1">
                         <h5>Links</h5>
                         <ul className="list-unstyled">
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">Directory</a></li>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Contact</a></li>
+                            {/*Using the Link Component <Link> to create links to a path to take the user in the website. The "to" attribute with the appropriate path to take the user   */}
+                            {/*We are using <Link> instead of anchor tab, <a> because we want to ensure that each of these links are handled wit hthe React Handle Library (creates a single page application, which will make the website run faster) */}
+                            <li><Link to="/home">Home</Link></li>
+                            <li><Link to="/directory">Directory</Link></li>
+                            <li><Link to="/aboutus">About</Link></li>
+                            <li><Link to="/contactus">Contact</Link></li>
                         </ul>
                     </div>
                     <div className="col-6 col-sm-3 text-center">
