@@ -1,7 +1,7 @@
 //Directory Component is going to be a Presentational Component (it will not hold any State Data)
 import React from "react"; //Importing React and Component
 import {Card, CardImg, CardImgOverlay, CardTitle} from "reactstrap"; //Importing ReactStrap Card component
-
+import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 //The Directory Class Component will be turned into two smaller Functional Components
 //RenderDirectoryItem Functional Component will be responsible for rendering each card with different campsite details
 //Functional Components always receive any data passed to them as properties of a single props object. In that props object, is passed in as the only argument. In the example below, we are destructuring the props object (seen in the code below). 
@@ -9,10 +9,14 @@ function RenderDirectoryItem({campsite}) {
     //Functional Component has no constructor method, nor a render method. Functional Components only have a return statement.
     return (
         <Card> 
-            <CardImg width="100%" src={campsite.image} alt={campsite.name} />
-            <CardImgOverlay>
-                <CardTitle>{campsite.name}</CardTitle>
-            </CardImgOverlay>
+            {/*Link is used so we can look into more details of the campsite when its url has "/director/idNumber", such as "directory/2" for a campsite with id 2 (it will show the user information for campsite with id 2). */}
+            {/*With Link, we are creating a dynamic link with JavaScript. Template literal is being used here. */}
+            <Link to={`/directory/${campsite.id}`}>
+                <CardImg width="100%" src={campsite.image} alt={campsite.name} />
+                <CardImgOverlay>
+                    <CardTitle>{campsite.name}</CardTitle>
+                </CardImgOverlay>
+            </Link>
     </Card>
     );
 }

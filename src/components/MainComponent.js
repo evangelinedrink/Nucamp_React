@@ -25,6 +25,8 @@ class Main extends Component {
     };
   }
 
+  
+
 
   render() { //When we are using (rendering) React components, the syntax will look like HTML or JSX tags with the angle brackets, <>. React components are capitalized, so Navbar and NavbarBarnd are React components.
     //Locally Scoped Component called HomePage. HomePage is only accessible in the Main Class Component because it is defined here (this is what it means for it to be locally scoped, only accessible in the component it was created in). 
@@ -44,6 +46,24 @@ class Main extends Component {
       );
     }
 
+    //Create the CampsiteWithId component. Code in the CampsiteWithId component will run when the url matches what is inside of the path, path="directory/:campsiteId"
+    //CampsiteWithId receives props from the root component and destructures the match object out from props
+    const CampsiteWithId= ({match}) => {
+      return (
+        //Rendering the CampsiteInfo Component and passing in a couple of things as props. One of the props is the selected campsite object and the other is an array of all the comments in the campsite.
+        //We have the full list of campsites in the Main Component state (this line of code is within the constructor and it is this.state = {campsites: CAMPSITES})
+        //We can access the full list of campsites with this.state.campsites, however we want to get only the campsite object that has the id that matches what is stored in the match.parems.campsiteId. This is why we are using Filter Method to get only that campsite
+        //The value of match.parems.campsiteId is stored as a string, it needs to be converted into a number to do the comparison in the Filter method. To do the comparison, unary plus operator is used here (+match.params.campsiteId) 
+        //When you have a number stored as a string and you want to convert it to a number, the unary plus operator is a way to convert it to a number. 
+        //campsite.id is a number and +match.params.campsiteId was a string but is then converted as a number. Index 0 is getting the object inside of the array obtained from the Filter Method
+        //For the comments, use Filter Method to get the comments that match the campsiteId. We want the entire array of comments for the campsite, which is why the zero index isn't used here. 
+        <CampsiteInfo 
+          campsite={this.state.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}
+          comments={this.state.comments.filter(comment => comment.campsiteId === +match.params.campsiteId)} 
+          />
+      );
+    };
+
     return (
       <div>
         {/*Rendering the Header Component*/}
@@ -57,6 +77,12 @@ class Main extends Component {
             {/*In the Directory Component, we are pasing in state data (this is the campsites data), which is why the directory component uses this render arrow function syntax (this render arrow function is normally done when passing in state data as props) */}
             <Route exact path="/directory" render={() => <Directory campsites={this.state.campsites} />} /> {/*The render function returns the Directory Component */}
             
+            {/*Routing a path for when the url has "/directory/campsiteId", so when the website sees this url it will show information for that campsite with that id */}
+            {/*The colon in path tells the web browser that what  follows the forward slash, after the colon, is going to be a parameter. It will take whatever that paramater is and puts it in this property called campsite ID*/}
+            {/*campsiteId gets stored as a property of that parems object */}
+            {/*This Route's matched object gets passed to the campsite with the id component as a prop automically, we don't have to specify it. */}
+            <Route path="/directory/:campsiteId" component={CampsiteWithId} />
+
             {/*Routing the Contact Component. This line below is telling our app to watch the browser address bar. Whenever the route in the address bar matches /contactus, then the Contact Component will be shown in the webpage */}
             <Route exact path="/contactus" component={Contact} />
             

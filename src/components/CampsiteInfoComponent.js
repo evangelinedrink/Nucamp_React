@@ -90,8 +90,8 @@ function CampsiteInfo(props) {
                     {/*Calling the RenderCampsite Functional Component and passing campsite into it. We need curly braces because the things inside of the return is in JSX. If we have JavaScript in JSX, we need curly braces.*/}
                     <RenderCampsite campsite={props.campsite} /> {/*We are calling the RenderCampsite Functional Component */}
                     
-                    {/* Calling the RenderComments Functional Component and pasing in the campsite object's comments array (it is passing in as an attribute). The comments array data will be the variable comments in the RenderComments Functional Component.*/}
-                    <RenderComments comments={props.campsite.comments}/> {/*Since comments is within the campsite object, we have to use props.campsite.comments */}
+                    {/* Calling the RenderComments Functional Component and pasing in the comments array (it is passing in as an attribute). The comments array data will be the variable comments in the RenderComments Functional Component.*/}
+                    <RenderComments comments={props.comments}/> {/*Since comments is within the campsite object, we have to use props.campsite.comments */}
                 </div>
             </div>                 
         ); 
