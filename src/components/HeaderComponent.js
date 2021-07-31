@@ -67,7 +67,7 @@ class Header extends Component {
                                 <NavItem>
                                     <NavLink className= "nav-link" to="/aboutus">
                                         {/*Font Awesome Icon for an Info Icon */}
-                                        <i className="fa fa-info fa-lg" /> About
+                                        <i className="fa fa-info fa-lg" /> About Us
                                     </NavLink>
                                 </NavItem>
 

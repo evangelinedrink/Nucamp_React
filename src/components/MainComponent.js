@@ -7,6 +7,7 @@ import Header from "./HeaderComponent"; //Importing the Header Component
 import Footer from "./FooterComponent"; //Importing the Footer Component
 import Home from "./HomeComponent"; //Importing the Home Component
 import Contact from "./ContactComponent";//Importing the Contact Component
+import About from "./AboutComponent"; //Importing the About Component
 import {Switch, Route, Redirect} from "react-router-dom"; //Importing Switch (Groups the <Route> components together), Route (renders the UI for a matching path), and Redirect (Redirects the user to a new URL) (these are React Router Components, used to make a Single Page App). These components redirects users when they click on a link in the website.
 import {CAMPSITES} from "../shared/campsites"; //The ../ means to go down one directory. Import the CAMPSITES array into this file
 import {COMMENTS} from "../shared/comments"; //The ../ means to go down one directory. Import the COMMENTS array into this file
@@ -83,6 +84,9 @@ class Main extends Component {
             {/*This Route's matched object gets passed to the campsite with the id component as a prop automically, we don't have to specify it. */}
             <Route path="/directory/:campsiteId" component={CampsiteWithId} />
 
+            {/*Routing the About Us Component. We are passing in the partners data from the Main Component to the About Component. Since the partners data is state data, we have to use the render arow function syntax, which was used for the Directory component above */}
+            <Route exact path="/aboutus" render={() => <About partners={this.state.partners} />} /> 
+            
             {/*Routing the Contact Component. This line below is telling our app to watch the browser address bar. Whenever the route in the address bar matches /contactus, then the Contact Component will be shown in the webpage */}
             <Route exact path="/contactus" component={Contact} />
             

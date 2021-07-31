@@ -15,7 +15,7 @@ function Footer(props) {
                             {/*We are using <Link> instead of anchor tab, <a> because we want to ensure that each of these links are handled wit hthe React Handle Library (creates a single page application, which will make the website run faster) */}
                             <li><Link to="/home">Home</Link></li>
                             <li><Link to="/directory">Directory</Link></li>
-                            <li><Link to="/aboutus">About</Link></li>
+                            <li><Link to="/aboutus">About Us</Link></li>
                             <li><Link to="/contactus">Contact</Link></li>
                         </ul>
                     </div>
