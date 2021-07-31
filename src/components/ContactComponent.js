@@ -1,13 +1,21 @@
 //Contact Component is a Presentational Functional Component
 import React from 'react';
+import {Breadcrumb, BreadcrumbItem} from "reactstrap"; //Importing ReactStrap Card component
+import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 
 function Contact(props) {
     return (
         <div className="container">
             <div className="row">
                 <div className="col">
-                    <h2>Contact Us</h2>
-                    <hr />
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                        {/*The attribute of active means that when the user is in the Directory Component, the Directory breadcrumb will appear as the active component */}
+                        <BreadcrumbItem active>Contact Us</BreadcrumbItem>
+                    </Breadcrumb>
+
+                    <h2>Contact Us</h2> {/*Header for Contact Us */}
+                    <hr /> {/*Horizontal Rule */}
                 </div>
             </div>
 

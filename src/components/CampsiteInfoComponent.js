@@ -1,6 +1,6 @@
 import React from "react";
-import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle} from "reactstrap"; //Importing ReactStrap Card Component
-
+import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap"; //Importing ReactStrap Card Component
+import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 //CampsiteInfo Class component is going to be split up into three Functional Components (one for each of the methods that were in the Class Component)
 //By creating three Functional Components (one for each method), we will not have one big Class Component handling everything. Each Functional Component will be handling different parts.
 
@@ -12,7 +12,6 @@ function RenderCampsite({campsite}) { //campsite is this Functional Component's 
             <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/}
                 <CardImg top src={campsite.image} alt={campsite.name} />
                 <CardBody>
-                    <CardTitle>{campsite.name}</CardTitle>
                     <CardText>{campsite.description}</CardText>
                 </CardBody>
             </Card>
@@ -86,7 +85,21 @@ function CampsiteInfo(props) {
         if(props.campsite) { //Checking to see if the "campsite" props is truth (not null, nor undefined). We don't need curly braces because this is JavaScript, not JSX yet.
         return (  
             <div className= "container"> {/*The "container" ensures that our selected campsite will be alligned with the list of campsites that are being rendered in the DirectoryComponent.js file. Container keeps things alligned in their box. */}
-                <div className="row"> {/*In JSX, can only have one element */}
+                <div className="row">
+                    <div className="col">
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to="/directory">Directory</Link></BreadcrumbItem>
+                            {/*The attribute of active means that when the user is in the Campsite Info Component, this breadcrumb will appear as the active component */}
+                            {/*We will have a dynamic text (meaning it changes based on which campsite the user has clicked on). The {props.campsite.name} will display the name of the campsite that the user selected */}
+                            <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
+                        </Breadcrumb>
+
+                        <h2>{props.campsite.name}</h2> {/*Header contains dynamic text which will show the name of the campsite that the user clicked on */}
+                        <hr /> {/*Horizontal Rule */}
+                    </div>
+                </div>
+                
+                <div className="row"> {/*In JSX, can only have one element */}                
                     {/*Calling the RenderCampsite Functional Component and passing campsite into it. We need curly braces because the things inside of the return is in JSX. If we have JavaScript in JSX, we need curly braces.*/}
                     <RenderCampsite campsite={props.campsite} /> {/*We are calling the RenderCampsite Functional Component */}
                     

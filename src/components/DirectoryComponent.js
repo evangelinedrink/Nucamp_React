@@ -1,6 +1,6 @@
 //Directory Component is going to be a Presentational Component (it will not hold any State Data)
 import React from "react"; //Importing React and Component
-import {Card, CardImg, CardImgOverlay, CardTitle} from "reactstrap"; //Importing ReactStrap Card component
+import {Card, CardImg, CardImgOverlay, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap"; //Importing ReactStrap Card component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 //The Directory Class Component will be turned into two smaller Functional Components
 //RenderDirectoryItem Functional Component will be responsible for rendering each card with different campsite details
@@ -39,6 +39,19 @@ function Directory(props) {
     //The final return will send data back to the Parent Component (in our project, this is the App component in App.js)
     return (
         <div className="container"> {/*JSX div*/}
+            <div className="row">
+                <div className="col">
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                        {/*The attribute of active means that when the user is in the Directory Component, the Directory breadcrumb will appear as the active component */}
+                        <BreadcrumbItem active>Directory</BreadcrumbItem>
+                    </Breadcrumb>
+
+                    <h2>Directory</h2> {/*Header for Directory */}
+                    <hr /> {/*Horizontal Rule */}
+                </div>
+            </div>
+            
             <div className="row">
                 {/*This directory variable is the array of the campsite information from the directory constant in lines 46-54. */}
                 {directory} {/*Using a JavaScript variable. To do this in JSX, you must use curly braces, {}. This {directory} variable is different than the Directory component (remember, JavaScript is case-sensitive) */}
