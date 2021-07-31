@@ -51,7 +51,7 @@ class Main extends Component {
         
         {/*Any Router Request will go through this Switch Statement until it finds a matching route */}
         <Switch>
-            <Route path="/home" component={HomePage} />
+            <Route path="/home" component={HomePage} /> {/*HomePage is an arrow function (lines 33-45) that filters and obtains the featured campsite, partner and promotion's objects (includes the name, image and description for each) */}
             
             {/*Directory Component is getting the campsites data from the CAMPSITES array as an attribute (by using campsites={this.state.campsites} ) */}
             {/*In the Directory Component, we are pasing in state data (this is the campsites data), which is why the directory component uses this render arrow function syntax (this render arrow function is normally done when passing in state data as props) */}
