@@ -48,7 +48,7 @@ class Main extends Component {
     }
 
     //Create the CampsiteWithId component. Code in the CampsiteWithId component will run when the url matches what is inside of the path, path="directory/:campsiteId"
-    //CampsiteWithId receives props from the root component and destructures the match object out from props
+    //CampsiteWithId receives props from the root component (since it is receiving a match object, the root component is from React Router. React Router gives match objects) and destructures the match object out from props
     const CampsiteWithId= ({match}) => {
       return (
         //Rendering the CampsiteInfo Component and passing in a couple of things as props. One of the props is the selected campsite object and the other is an array of all the comments in the campsite.
