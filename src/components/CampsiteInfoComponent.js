@@ -1,8 +1,125 @@
 import React from "react";
-import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap"; //Importing ReactStrap Card Component
+import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, Label, ModalHeader, ModalBody} from "reactstrap"; //Importing ReactStrap Card Component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
+import {Control, LocalForm, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
 //CampsiteInfo Class component is going to be split up into three Functional Components (one for each of the methods that were in the Class Component)
 //By creating three Functional Components (one for each method), we will not have one big Class Component handling everything. Each Functional Component will be handling different parts.
+
+//Validation to make sure what is written in the Contact Us Form is valid
+//First parameter for maxLength takes the maximum length (len) and the second one takes the value (val) which is the input string typed in by the user 
+//We want maxLength to return True if the maxLength has not been succeeded. !val will return true because if there is no value, the maximum length hasn't been succeeded.
+//We are also checking if the val.length is less than or equal to the length.
+//If both of these conditions are False, then this maxLength function will return False and will fail the test for maxLength and will return an error 
+const maxLength = len => val => !val || (val.length <=len);
+//minLenght function will be true if there is a value (val) and the value's length is greater or equal to the length
+ const minLength= len => val => val && (val.length >=len);
+
+//Creating the CommentForm class component
+class CommentForm extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state={
+            isModalOpen: false,
+        };
+
+        //Binding the toggleMoadl with the "this" keyword
+        this.toggleModal= this.toggleModal.bind(this);
+
+        //Binding the "this" keyword to the handleInputChange method
+        //The "this" binding makes it so we can use the "this" keyword inside the handleSubmit method and have it point to the correct object.
+        //Binding the handleSubmit event handler. We do this because when we refer to this.state in the handleSubmit method, it knows to look for that state in the constructor of this component. 
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    //Method that will run when the Comment Modal when it is clicked on by the user.
+    //When this method is clicked on, it will set the state to the opposite of its current state (so if it is false initially, it will be set to true)
+    toggleModal() {
+        this.setState( {
+            isModalOpen: !this.state.isModalOpen //Setting the state for isModalOpen to the opposite of its current state
+        });
+    }
+
+    //handleSubmit method that will log the current state to the console. When the user clicks on the Submit Comment button, this method will start running
+    handleSubmit(values) {
+        console.log("Current state is: " + JSON.stringify(values)); //console log expects a string and not an object. JavaScript has a handy tool called JSON.stringify that will turn an object into a string  
+        alert("Current state is: " + JSON.stringify(values)); //This will produce an alert
+    }
+
+    render() {
+        return (
+            <div>
+                {/*Button to Submit Comment. When the user clicks on the Submit Comment button, they will be taken to the Modal where they can write a comment */}
+                <Button outline onClick={this.toggleModal}>
+                    <i className="fa fa-pencil fa-lg"/> Submit Comment
+                </Button>
+                
+                {/*Modal Component containing a React REdux form for users to submit their comments. isOpen is an attribute defined in ReactStrap */}
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}> {/*When isOpen is set to False, the Modal will be closed or hidden. If this.state.isModalOpen set to True, the modal is open.*/}
+                    <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader> {/*toggleModal method will let us close the modal when it has been opened.  */}
+                        <ModalBody>
+                            <LocalForm onSubmit={values => this.handleSubmit(values)}> {/*This corresponds to when the user clicks on the submit button, the handleSubmit method will start running. */}
+                                {/*This is for the rating control inputs */}
+                                <div className="form-group">
+                                    <Label htmlFor="rating">Rating</Label> {/*Rating section of form*/}
+                                    <Control.select model=".rating" id="rating" name="rating" className="form-control"> {/*Form-control  is used for textual inputs to help with the general appearance, focus state, sizing and more.
+                                        //validators attribute contains the functions that are appropriate for this component to check to see if the user has submitted the correct values in the Form */}
+                                        <option>Select Rating</option> {/*User has to click and select a rating, otherwise it won't show up in the Alert box. I don't know why this happens */}
+                                        <option value="5">5</option>
+                                        <option value="4">4</option>
+                                        <option value="3">3</option>
+                                        <option value="2">2</option>
+                                        <option value="1">1</option>
+                                    </Control.select>
+                                </div>
+
+                                {/*This is for the author control inputs */}
+                                <div className="form-group">
+                                    <Label htmlFor="author">Your Name</Label>
+                                    <Control.text model=".author" id="author" name="author" className="form-control"
+                                    //validators attribute contains the functions that are appropriate for this component to check to see if the user has submitted the correct values in the Form
+                                    validators={{
+                                        minLength: minLength(2), //Ensures that the author field is at least 2 characters long
+                                        maxLength: maxLength(15), //Ensures that the author field is less than or equal to 15 characters long
+                                    }}
+                                    
+                                    />
+                                    
+                                    {/*Errors component is added */}
+                                    <Errors
+                                            className="text-danger" //Makes error color red
+                                            model=".author"//model needs to match the model of the corresponding control component
+                                            show="touched" //Only show error messages if it has been touched by the user (clicked on by the user)
+                                            component="div" //This tells React-Redux form to wrap all the errors in a div
+                                            messages= {{ //These are the error messages that will show when the values of these functions return False
+                                                minLength: "Must be at least 2 characters",
+                                                maxLength: "Must be 15 characters or less"
+                                            }}
+                                    />
+                                </div>
+
+                                {/*This is for the text control inputs */}
+                                <div className="form-group">
+                                    <Label htmlFor="text">Comment</Label>
+                                    <Control.textarea model=".text" rows="6" id="text" name="text" className="form-control">
+
+                                    </Control.textarea>
+                                </div>
+
+                                {/*This will create a Submit button that the user can click on to submit their comment */}
+                                {/*Type submit means that when this button is clicked, all the information will then go to the onSubmit location. */}
+                                <Button type="submit" value="submit" color="primary">Submit</Button>
+                            
+                            </LocalForm>
+                        </ModalBody>
+                </Modal>
+
+
+
+            </div>
+        );
+    }
+}
 
 //RenderCampsite Functional Component. campsite is a property of props, but it is destructured using the Object Destructuring.
 //Its parameter, campsite, has been defined in the render() method in line 54. The parameter named campsite = this.props.campsite. This is why we don't have to write this.props.campsite here to get the campsite data.
@@ -70,6 +187,9 @@ function RenderComments({comments}) { //Takes the comments array stored in the c
                         );
                     })
                 }
+
+                {/*Displaying (rendering) the Submit Comment button. */}
+                <CommentForm />
             </div>
         )
     }

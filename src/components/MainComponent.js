@@ -118,7 +118,6 @@ class Main extends Component {
   }
 }
 
-
 //connect() generates a container component that wraps around other components to subscribe them to the store
 //connect() allows the Main component to take its State data from the Redux Store
 //withRouter() will work with these changes to our export.
