@@ -2,9 +2,29 @@
 import React, {Component} from 'react';
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row} from "reactstrap"; //Importing ReactStrap Card component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
-import {Control, LocalForm} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
+import {Control, LocalForm, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
 //Contact Form is going to use the Redux Store. All State data is stored in the Redux Store because it is the Single Source of Truth for the Application state.
 //React-Redux-Form Will store the Form State in the Redux Store
+
+//Validation to make sure what is written in the Contact Us Form is valid
+//required constant receives val as an argument. val is a string because all Form Inputs are received as strings, even if they are numbers.
+//In this required function, it checks  to make sure that it has a value it has received (it isn't defind or null)
+//val will evalaute as Falsy if it was null or undefined. If the input of val is False, an error will occur
+const required = val => val && val.length;
+//First parameter for maxLength takes the maximum length (len) and the second one takes the value (val) which is the input string typed in by the user 
+//We want maxLength to return True if the maxLength has not been succeeded. !val will return true because if there is no value, the maximum length hasn't been succeeded.
+//We are also checking if the val.length is less than or equal to the length.
+//If both of these conditions are False, then this maxLength function will return False and will fail the test for maxLength and will return an error 
+const maxLength = len => val => !val || (val.length <=len);
+//minLenght function will be true if there is a value (val) and the value's length is greater or equal to the length
+ const minLength= len => val => val && (val.length >=len);
+ //If isNumber is not a valid number, it will return False. If isNumber is a valid number, it will return True. With !isNaN we are saying it is not, not a number
+ const isNumber= val => !isNaN(+val); //Unary + operator will take the val and turn it into a number if val is a number. If it is not a number, it will turn it into NaN (Not a Number). !isNaN checks to see if +val is not a number. 
+//Checking to see if the user has placed a valid email with this regular expression
+//Checking to make sure the email contains values of A-Z and only characters that are valid in an email address. 
+//Then we check to see if the @ sign is in there and following the @ sign where the domain name will be, A-z and 0-9 are permitted.
+//. is required and the domain extension that can be between 2-4 letters. Using the built-in method from JavaScript called test. This will test whatever value is passed in with the RegEx pattern
+const validEmail = val => /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val);
 
 //Contact Component is now a Class Component
 class Contact extends Component {
@@ -91,7 +111,25 @@ class Contact extends Component {
                                     <Control.text model=".firstName" id="firstName" name="firstName" //Control is from React-Redux Form and text means that it is a text type. Each of these Control components needs a model attribute. This tells Redux that the value for this field will be stored in State under the property named firstName. Add the . at the beginning for the model attribute  
                                         placeholder="First Name"
                                         className="form-control" //Form-control  is used for textual inputs to help with the general appearance, focus state, sizing and more.
+                                        //validators attribute contains the functions that are appropriate for this component to check to see if the user has submitted the correct values in the Form
+                                        validators={{
+                                            required,
+                                            minLength: minLength(2),
+                                            maxLength: maxLength(15),
+                                        }}
                                        /> 
+                                       {/*Errors component is added */}
+                                       <Errors
+                                            className="text-danger" //Makes error color red
+                                            model=".firstName"//model needs to match the model of the corresponding control component
+                                            show="touched" //Only show error messages if it has been touched by the user (clicked on by the user)
+                                            component="div" //This tells React-Redux form to wrap all the errors in a div
+                                            messages= {{ //These are the error messages that will show when the values of these functions return False
+                                                required: "Required",
+                                                minLength: "Must be at least 2 characters",
+                                                maxLength: "Must be 15 characters or less"
+                                            }}
+                                        />
                                 </Col>
                             </Row>
                             <Row className="form-group">
@@ -100,8 +138,25 @@ class Contact extends Component {
                                     <Control.text model=".lastName" id="lastName" name="lastName"
                                         placeholder="Last Name"
                                         className="form-control" //Form-control  is used for textual inputs to help with the general appearance, focus state, sizing and more.
-                                        />
-                                       
+                                        //validators attribute contains the functions that are appropriate for this component to check to see if the user has submitted the correct values in the Form
+                                        validators={{
+                                            required,
+                                            minLength: minLength(2),
+                                            maxLength: maxLength(15),
+                                        }}
+                                    />
+                                    {/*Errors component is added */}
+                                    <Errors
+                                            className="text-danger" //Makes error color red
+                                            model=".lastName"//model needs to match the model of the corresponding control component
+                                            show="touched" //Only show error messages if it has been touched by the user (clicked on by the user)
+                                            component="div" //This tells React-Redux form to wrap all the errors in a div
+                                            messages= {{ //These are the error messages that will show when the values of these functions return False
+                                                required: "Required",
+                                                minLength: "Must be at least 2 characters",
+                                                maxLength: "Must be 15 characters or less"
+                                            }}
+                                    />  
                                 </Col>                        
                             </Row>
                             <Row className="form-group">
@@ -110,8 +165,27 @@ class Contact extends Component {
                                     <Control.text model=".phoneNum" id="phoneNum" name="phoneNum" //The model attribute has the same value as the name attribute, except that it has a . in front of it.
                                         placeholder="Phone number"
                                         className="form-control" //Form-control  is used for textual inputs to help with the general appearance, focus state, sizing and more.
-                                        />
-                                       
+                                        //validators attribute contains the functions that are appropriate for this component to check to see if the user has submitted the correct values in the Form
+                                        validators={{
+                                            required,
+                                            minLength: minLength(2),
+                                            maxLength: maxLength(15),
+                                            isNumber
+                                        }}
+                                    />
+                                    {/*Errors component is added */}
+                                    <Errors
+                                            className="text-danger" //Makes error color red
+                                            model=".phoneNum"//model needs to match the model of the corresponding control component
+                                            show="touched" //Only show error messages if it has been touched by the user (clicked on by the user)
+                                            component="div" //This tells React-Redux form to wrap all the errors in a div
+                                            messages= {{ //These are the error messages that will show when the values of these functions return False
+                                                required: "Required",
+                                                minLength: "Must be at least 10 numbers",
+                                                maxLength: "Must be 15 numbers or less",
+                                                isNumber: "Must be a number"
+                                            }}
+                                    />   
                                 </Col>
                             </Row>
                             <Row className="form-group">
@@ -120,8 +194,24 @@ class Contact extends Component {
                                     <Control.text model=".email" id="email" name="email"
                                         placeholder="Email"
                                         className="form-control" //Form-control  is used for textual inputs to help with the general appearance, focus state, sizing and more.
+                                        //validators attribute contains the functions that are appropriate for this component to check to see if the user has submitted the correct values in the Form
+                                        validators={{
+                                            required,
+                                            validEmail
+                                        }}
                                     />
-                                        
+
+                                     {/*Errors component is added */}
+                                       <Errors
+                                            className="text-danger" //Makes error color red
+                                            model=".email"//model needs to match the model of the corresponding control component
+                                            show="touched" //Only show error messages if it has been touched by the user (clicked on by the user)
+                                            component="div" //This tells React-Redux form to wrap all the errors in a div
+                                            messages= {{ //These are the error messages that will show when the values of these functions return False
+                                                required: "Required",
+                                                validEmail: "Invalid email address"
+                                            }}
+                                        />   
                                 </Col>
                             </Row>
                             <Row className="form-group">
