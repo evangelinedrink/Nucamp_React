@@ -118,6 +118,8 @@ class Main extends Component {
   }
 }
 
-//Routing the Contact Component
 
-export default Main;
+//connect() generates a container component that wraps around other components to subscribe them to the store
+//connect() allows the Main component to take its State data from the Redux Store
+//withRouter() will work with these changes to our export.
+export default withRouter(connect(mapStateToProps)(Main));
