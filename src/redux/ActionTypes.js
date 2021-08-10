@@ -1,0 +1,1 @@
+export const ADD_COMMENT = "ADD_COMMENT"; //This is one action type. This creates a variable called ADD_COMMENT and setting its value to the string, "ADD_COMMENT", and exporting it.

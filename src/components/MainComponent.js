@@ -9,7 +9,8 @@ import Home from "./HomeComponent"; //Importing the Home Component
 import Contact from "./ContactComponent";//Importing the Contact Component
 import About from "./AboutComponent"; //Importing the About Component
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Importing Switch (Groups the <Route> components together), Route (renders the UI for a matching path), and Redirect (Redirects the user to a new URL) (these are React Router Components, used to make a Single Page App). These components redirects users when they click on a link in the website.
-import {connect} from "react-redux"; //connection 
+import {connect} from "react-redux"; //connection
+import {addComment} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
 
 //Application data is no longer stored in the Main Component state, it will be transfered to the Redux Store. This is why the data below is commented out.
 //import {CAMPSITES} from "../shared/campsites"; //The ../ means to go down one directory. Import the CAMPSITES array into this file
@@ -27,6 +28,13 @@ const mapStateToProps= state => {
     promotions: state.promotions,
   }
 }
+
+//Setting up mapDispatchToProps, which will call the Redux Store's dispatch method for us
+//You can setup mapDispatchToProps as an object or as a function. The recommended way is to set it up as an object
+const mapDispatchToProps=  {
+  addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)) //We are calling the Action Creator in this arrow function's body. We are passing in the campsiteId, rating, author and text.
+};
+
 class Main extends Component {
   
   //We are getting the State data from Redux by setting up the mapStateToProps function
@@ -79,6 +87,7 @@ class Main extends Component {
         <CampsiteInfo 
           campsite={this.props.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}
           comments={this.props.comments.filter(comment => comment.campsiteId === +match.params.campsiteId)} 
+          addComment={this.props.addComment} //We are now passing in the Add_Comment function to the CampsiteInfo component as a prop.
           />
       );
     };
@@ -121,4 +130,6 @@ class Main extends Component {
 //connect() generates a container component that wraps around other components to subscribe them to the store
 //connect() allows the Main component to take its State data from the Redux Store
 //withRouter() will work with these changes to our export.
-export default withRouter(connect(mapStateToProps)(Main));
+//Adding the mapDispatchToProps inside of the connect function as the second argument.
+//mapDispatchToProps makes the Add_Comment Action Creator function available inside of the MainComponent as a prop.
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));

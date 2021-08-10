@@ -42,8 +42,9 @@ class CommentForm extends React.Component {
 
     //handleSubmit method that will log the current state to the console. When the user clicks on the Submit Comment button, this method will start running
     handleSubmit(values) {
-        console.log("Current state is: " + JSON.stringify(values)); //console log expects a string and not an object. JavaScript has a handy tool called JSON.stringify that will turn an object into a string  
-        alert("Current state is: " + JSON.stringify(values)); //This will produce an alert
+        this.toggleModal();
+        //When the form is submitted, the ADD_Comment action creator will create an action using the values from this form. Then that action will get dispatch to its reducer that will then update the state.
+        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
     }
 
     render() {
@@ -166,8 +167,8 @@ function RenderCampsite(campsite) { //campsite is this Functional Component's on
 }
 */
 
-//RenderComments Functional Method. Its parameter, {comments}, has been destructured. comments has been defined in the render() method by using comments = this.props.campsite.comments. This is why we don't have to write this.props.campsites.comments here to get the comments data.
-function RenderComments({comments}) { //Takes the comments array stored in the campsite object as a parameter, thus renderComments(comments)
+//RenderComments Functional Method. Its parameter, {comments, addComment, campsiteId}, has been destructured. comments has been defined in the render() method by using comments = this.props.campsite.comments. This is why we don't have to write this.props.campsites.comments here to get the comments data.
+function RenderComments({comments, addComment, campsiteId}) { //Takes the comments array stored in the campsite object as a parameter, thus renderComments(comments)
     if(comments) { //Check to see that comments are not null or undefined (this would make if(comments) = false).
         return (
             <div className="col-md-5 m-1"> {/*Bootstrap column classes that occupies 5 columns for viewports md and above */}
@@ -188,8 +189,8 @@ function RenderComments({comments}) { //Takes the comments array stored in the c
                     })
                 }
 
-                {/*Displaying (rendering) the Submit Comment button. */}
-                <CommentForm />
+                {/*Displaying (rendering) the Submit Comment button. We are passing in the props campsiteId, addComment to the CommentForm component. We will now be able to see the users added comment to the comment list (the comment id will also be included).*/}
+                <CommentForm campsiteId={campsiteId} addComment={addComment}/>
             </div>
         )
     }
@@ -224,7 +225,12 @@ function CampsiteInfo(props) {
                     <RenderCampsite campsite={props.campsite} /> {/*We are calling the RenderCampsite Functional Component */}
                     
                     {/* Calling the RenderComments Functional Component and pasing in the comments array (it is passing in as an attribute). The comments array data will be the variable comments in the RenderComments Functional Component.*/}
-                    <RenderComments comments={props.comments}/> {/*Since comments is within the campsite object, we have to use props.campsite.comments */}
+                    {/*Since comments is within the campsite object, we have to use props.campsite.comments */}
+                    <RenderComments 
+                        comments={props.comments}
+                        addComment={props.addComment}//Passing in the ADD_Comment prop to the RenderComments component
+                        campsiteId= {props.campsite.id}
+                    /> 
                 </div>
             </div>                 
         ); 
