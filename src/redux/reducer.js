@@ -1,3 +1,8 @@
+//Creating separate reducers for each of our data arrays: campsites, comments, partners and promotions
+//We will then recombine these reducers at the end. 
+//This is the reason why the reducer.js file is not being used anymore since each data array has its own reducer.
+
+
 //Reducers (functions) are used to create and update State
 import {CAMPSITES} from "../shared/campsites"; //This file is not in the redux folder, which is why we use .. to back out of the folder to go to another folder.
 import {COMMENTS} from "../shared/comments";
@@ -13,6 +18,7 @@ export const initialState= {
     partners: PARTNERS,
     promotions: PROMOTIONS,
 };
+
 
 //Reducer function that uses default parameters (so if no state is passed in, the initial State values will be used)
 //Reducer function also takes in action as a parameter
