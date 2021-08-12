@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row} from "reactstrap"; //Importing ReactStrap Card component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
-import {Control, LocalForm, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
+import {Control, Form, Errors, actions} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
 //Contact Form is going to use the Redux Store. All State data is stored in the Redux Store because it is the Single Source of Truth for the Application state.
 //React-Redux-Form Will store the Form State in the Redux Store
 
@@ -63,6 +63,7 @@ class Contact extends Component {
     handleSubmit(values) {
         console.log("Current state is: " + JSON.stringify(values)); //console log expects a string and not an object. JavaScript has a handy tool called JSON.stringify that will turn an object into a string  
         alert("Current state is: " + JSON.stringify(values)); //This will produce an alert
+        this.props.resetFeedbackForm(); //This will make sure when the form is submitted, the form values are reset to the initial values.
     }
 
     render() {
@@ -104,7 +105,8 @@ class Contact extends Component {
                         <hr />
                     </div>
                     <div className="col-md-10">
-                        <LocalForm onSubmit={values => this.handleSubmit(values)}> {/*This corresponds to when the user clicks on the submit button, the handleSubmit method will start running. It is located in the top element of the <Form> element */}
+                        {/*You need to have the model name (in this case it is feedbackForm) below in order to connect it with the State in the Redux Store*/}
+                        <Form model="feedbackForm" onSubmit={values => this.handleSubmit(values)}> {/*This corresponds to when the user clicks on the submit button, the handleSubmit method will start running. It is located in the top element of the <Form> element */}
                             <Row className="form-group"> {/*We are using Row and className="form-group" because we are no longer using the FormGroup component from ReactStrap since it only works with Form component from ReactStrap.  */}
                                 <Label htmlFor="firstName" md={2}>First Name</Label>
                                 <Col md={10}>
@@ -249,7 +251,7 @@ class Contact extends Component {
                                     </Button>
                                 </Col>
                             </Row>
-                        </LocalForm>
+                        </Form>
                     </div>
                 </div>
            

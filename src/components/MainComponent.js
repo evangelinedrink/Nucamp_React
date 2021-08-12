@@ -10,6 +10,7 @@ import Contact from "./ContactComponent";//Importing the Contact Component
 import About from "./AboutComponent"; //Importing the About Component
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Importing Switch (Groups the <Route> components together), Route (renders the UI for a matching path), and Redirect (Redirects the user to a new URL) (these are React Router Components, used to make a Single Page App). These components redirects users when they click on a link in the website.
 import {connect} from "react-redux"; //connection
+import {actions} from "react-redux-form"; //actions from the react-redux-form that will make an action creator named actions.reset available to us which will be used to the mapDispatchToProps
 //Making the fetchCampsites Action Creator available to MainComponent.js in the code below
 import {addComment, fetchCampsites} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
 
@@ -37,7 +38,8 @@ const mapDispatchToProps=  {
   addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)), //We are calling the Action Creator in this arrow function's body. We are passing in the campsiteId, rating, author and text.
   //For the code below, we don't pass in anything in the parameter, but we will let it call the fetchCamspites Action Creator in the body of this fetchCampsites method. 
   //This fetchCampsites Action Creator is now available to the Main Component to be passed into elements/components as a prop
-  fetchCampsites: () => (fetchCampsites()) //We are adding the fetchCampsites Action Creator (which is a method, thus a function (this is why we are using arrow function to create it here)) to the mapDispatchToProps, that way fetchCampsites can be used as a prop to different elements/components and fetchCampsites will be called to work whenever a user does something to the elements/components
+  fetchCampsites: () => (fetchCampsites()), //We are adding the fetchCampsites Action Creator (which is a method, thus a function (this is why we are using arrow function to create it here)) to the mapDispatchToProps, that way fetchCampsites can be used as a prop to different elements/components and fetchCampsites will be called to work whenever a user does something to the elements/components
+  resetFeedbackForm: () => (actions.reset("feedbackForm"))//We are using the model name that is being used for the entire Contact Us form. That model name was feedbackForm
 };
 
 class Main extends Component {
@@ -132,7 +134,8 @@ class Main extends Component {
             <Route exact path="/aboutus" render={() => <About partners={this.props.partners} />} /> 
             
             {/*Routing the Contact Component. This line below is telling our app to watch the browser address bar. Whenever the route in the address bar matches /contactus, then the Contact Component will be shown in the webpage */}
-            <Route exact path="/contactus" component={Contact} />
+            {/*Passing in the the Reset Feedback Form function the contact component as a prop. Since we are passing in a prop to Contact, we will need to change the attribute to a render attribute and set it up as an error function*/}
+            <Route exact path="/contactus" render={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
             
             <Redirect to="/home" /> {/*Redirect component acts as a catch all (so it is like a Default propsment in a JavaScript Switch propsment) */}
         </Switch>
