@@ -2,6 +2,8 @@ import React from "react";
 import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, Label, ModalHeader, ModalBody} from "reactstrap"; //Importing ReactStrap Card Component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 import {Control, LocalForm, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
+import {Loading} from "./LoadingComponent";
+
 //CampsiteInfo Class component is going to be split up into three Functional Components (one for each of the methods that were in the Class Component)
 //By creating three Functional Components (one for each method), we will not have one big Class Component handling everything. Each Functional Component will be handling different parts.
 
@@ -202,7 +204,30 @@ function RenderComments({comments, addComment, campsiteId}) { //Takes the commen
 //In the CampsiteInfo Funtional Component, we will pass in props.  Functional Components don't use the "this" keyword.
 function CampsiteInfo(props) {
 //Since if/else statement is JavaScript, if we place it inside of a return() and inside of a <div> element, it will show the if/else words on the website. 
-        //We are only returning one item because if props.campsite is true or false, only one thing will show.
+        if(props.isLoading) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <Loading /> {/*This will display the Loading component */}
+                    </div>
+                </div>
+            );
+        }    
+
+        //This will display if there is an Error in the server (the campsites data can't load)
+        if(props.errMess) {
+            return (
+                <div className= "container">
+                    <div className="row">
+                        <div className="col">
+                            <h4>{props.errMess}</h4>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    
+    //We are only returning one item because if props.campsite is true or false, only one thing will show.
         if(props.campsite) { //Checking to see if the "campsite" props is truth (not null, nor undefined). We don't need curly braces because this is JavaScript, not JSX yet.
         return (  
             <div className= "container"> {/*The "container" ensures that our selected campsite will be alligned with the list of campsites that are being rendered in the DirectoryComponent.js file. Container keeps things alligned in their box. */}

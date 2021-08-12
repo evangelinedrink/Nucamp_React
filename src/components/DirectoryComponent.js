@@ -2,6 +2,8 @@
 import React from "react"; //Importing React and Component
 import {Card, CardImg, CardImgOverlay, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap"; //Importing ReactStrap Card component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
+import {Loading} from "./LoadingComponent";
+
 //The Directory Class Component will be turned into two smaller Functional Components
 //RenderDirectoryItem Functional Component will be responsible for rendering each card with different campsite details
 //Functional Components always receive any data passed to them as properties of a single props object. In that props object, is passed in as the only argument. In the example below, we are destructuring the props object (seen in the code below). 
@@ -26,7 +28,8 @@ function Directory(props) {
 
     //Creating a directory variable that will contain an array of elements. directory variable is going to get the Objects from the CAMPSITES array. Since the CAMPSITES array is being passed in as props (it is no longer data located in the constructor of the Directory Component), we have to change the "state" into "props". 
     //For Functional Components, we don't use the "this" keyword when accessing props
-    const directory= props.campsites.map(campsite => { //This Map Array Method will go through all of the campsites from the local state (campsites array) and make a new array where each array item will contains the campsite.image, campsite.name and campsite.director (seen in lines 49-51) 
+    //We have to change the campsites object because it is not just holding the campsites: [] array, but also the isLoading: false, and errMess: null (this is seen in the campsites.js file inside of the redux folder). This is why it is this.props.campsites.campsites, which will just access the campsites array not the errMess and isLoading properties.
+    const directory= props.campsites.campsites.map(campsite => { //This Map Array Method will go through all of the campsites from the local state (campsites array) and make a new array where each array item will contains the campsite.image, campsite.name and campsite.director (seen in lines 49-51) 
         return ( //This return is only used for this arrow function. What it will do is get each campsite object from the campsites array and return it.
             //To render an array of elements most efficiently, add a unique key attribute to the topmost element in each array item.
             <div key={campsite.id} className="col-md-5 m-1"> {/*This is JSX, so we use "className" */}
@@ -36,6 +39,30 @@ function Directory(props) {
         );
     });
 
+    //Determining if the Loading component should be displayed
+    if (props.campsites.isLoading) {
+        return (
+            <div className= "container">
+                <div className="row">
+                   <Loading /> 
+                </div>
+            </div>
+        );
+    }
+
+    //Determining if the Error Message component should be displayed
+    if (props.campsites.errMess) {
+        return (
+            <div className="container">
+                <div className="row">
+                    <div className="col">
+                        <h4>{props.campsites.errMess}</h4>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
     //The final return will send data back to the Parent Component (in our project, this is the App component in App.js)
     return (
         <div className="container"> {/*JSX div*/}

@@ -10,7 +10,9 @@ import Contact from "./ContactComponent";//Importing the Contact Component
 import About from "./AboutComponent"; //Importing the About Component
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Importing Switch (Groups the <Route> components together), Route (renders the UI for a matching path), and Redirect (Redirects the user to a new URL) (these are React Router Components, used to make a Single Page App). These components redirects users when they click on a link in the website.
 import {connect} from "react-redux"; //connection
-import {addComment} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
+//Making the fetchCampsites Action Creator available to MainComponent.js in the code below
+import {addComment, fetchCampsites} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
+
 
 //Application data is no longer stored in the Main Component state, it will be transfered to the Redux Store. This is why the data below is commented out.
 //import {CAMPSITES} from "../shared/campsites"; //The ../ means to go down one directory. Import the CAMPSITES array into this file
@@ -32,7 +34,10 @@ const mapStateToProps= state => {
 //Setting up mapDispatchToProps, which will call the Redux Store's dispatch method for us
 //You can setup mapDispatchToProps as an object or as a function. The recommended way is to set it up as an object
 const mapDispatchToProps=  {
-  addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)) //We are calling the Action Creator in this arrow function's body. We are passing in the campsiteId, rating, author and text.
+  addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)), //We are calling the Action Creator in this arrow function's body. We are passing in the campsiteId, rating, author and text.
+  //For the code below, we don't pass in anything in the parameter, but we will let it call the fetchCamspites Action Creator in the body of this fetchCampsites method. 
+  //This fetchCampsites Action Creator is now available to the Main Component to be passed into elements/components as a prop
+  fetchCampsites: () => (fetchCampsites()) //We are adding the fetchCampsites Action Creator (which is a method, thus a function (this is why we are using arrow function to create it here)) to the mapDispatchToProps, that way fetchCampsites can be used as a prop to different elements/components and fetchCampsites will be called to work whenever a user does something to the elements/components
 };
 
 class Main extends Component {
@@ -52,7 +57,13 @@ class Main extends Component {
   }
   */
 
-  
+  //As soon as the Main Component is rendered (displaying) in the DOM, we would like to display (fetch) the Campsites data by using the fetchCampsites() Action Creator
+  //To do this, we are going to use a special React method called componentDidMount()
+  //componentDidMount() is a Lifecycle Method. Every React Component has a lifecycle, which means there are certain points where it gets created and inserted in the DOM, when it gets updated and when it gets removed from the DOM. There are certain methods when each of these steps occur 
+  //componentDidMount() is called right after a React Component is created and inserted in the DOM
+  componentDidMount() {
+      this.props.fetchCampsites();
+  }
 
 
   render() { //When we are using (rendering) React components, the syntax will look like HTML or JSX tags with the angle brackets, <>. React components are capitalized, so Navbar and NavbarBarnd are React components.
@@ -65,8 +76,11 @@ class Main extends Component {
         //3 props are being passed in the Home Component, one for each item that we would like to feature on the Home Page. 
         //We are using the filtered method because the items to be featured have a "feature: true" property in their Object. We want the computer to only display the data for the Objects that have a "feature: true" property. 
         //Only the featured object will be in a new array after going through the Filter Array Method. We use index number 0, [0], to pull the object from the array and then the object is passed into the Home Component as props
+        //We have to change the campsites object because it is not just holding the campsites: [] array, but also the isLoading: false, and errMess: null (this is seen in the campsites.js file inside of the redux folder). This is why it is this.props.campsites.campsites, which will just access the campsites array not the errMess and isLoading properties.
         <Home 
-            campsite={this.props.campsites.filter(campsite => campsite.featured)[0]}
+            campsite={this.props.campsites.campsites.filter(campsite => campsite.featured)[0]}
+            campsitesLoading= {this.props.campsites.isLoading} //We are passing in the isLoading property of the campsite's state object
+            campsitesErrMess= {this.props.campsites.errMess} //We are passing in the errMess property of the campsite's state object
             promotion={this.props.promotions.filter(promotion => promotion.featured)[0]}
             partner={this.props.partners.filter(partner => partner.featured)[0]}
         />
@@ -79,13 +93,16 @@ class Main extends Component {
       return (
         //Rendering the CampsiteInfo Component and passing in a couple of things as props. One of the props is the selected campsite object and the other is an array of all the comments in the campsite.
         //We have the full list of campsites in the Main Component props (this line of code is within the constructor and it is this.props = {campsites: CAMPSITES})
-        //We can access the full list of campsites with this.props.campsites, however we want to get only the campsite object that has the id that matches what is stored in the match.parems.campsiteId. This is why we are using Filter Method to get only that campsite
+        //We have to change the campsites object because it is not just holding the campsites: [] array, but also the isLoading: false, and errMess: null (this is seen in the campsites.js file inside of the redux folder). This is why it is this.props.campsites.campsites, which will just access the campsites array not the errMess and isLoading properties.
+        //We can access the full list of campsites with this.props.campsites.campsites, however we want to get only the campsite object that has the id that matches what is stored in the match.parems.campsiteId. This is why we are using Filter Method to get only that campsite
         //The value of match.parems.campsiteId is stored as a string, it needs to be converted into a number to do the comparison in the Filter method. To do the comparison, unary plus operator is used here (+match.params.campsiteId) 
         //When you have a number stored as a string and you want to convert it to a number, the unary plus operator is a way to convert it to a number. 
         //campsite.id is a number and +match.params.campsiteId was a string but is then converted as a number. Index 0 is getting the object inside of the array obtained from the Filter Method
         //For the comments, use Filter Method to get the comments that match the campsiteId. We want the entire array of comments for the campsite, which is why the zero index isn't used here. 
         <CampsiteInfo 
-          campsite={this.props.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}
+          campsite={this.props.campsites.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}
+          isLoading= {this.props.campsites.isLoading} //We are passing in the isLoading property of the campsite's state object
+          errMess= {this.props.campsites.errMess} //We are passing in the errMess property of the campsite's state object
           comments={this.props.comments.filter(comment => comment.campsiteId === +match.params.campsiteId)} 
           addComment={this.props.addComment} //We are now passing in the Add_Comment function to the CampsiteInfo component as a prop.
           />
