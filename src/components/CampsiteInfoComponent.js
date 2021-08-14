@@ -3,6 +3,7 @@ import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle, Breadcrumb
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 import {Control, LocalForm, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
 import {Loading} from "./LoadingComponent";
+import {baseUrl} from "../shared/baseUrl";
 
 //CampsiteInfo Class component is going to be split up into three Functional Components (one for each of the methods that were in the Class Component)
 //By creating three Functional Components (one for each method), we will not have one big Class Component handling everything. Each Functional Component will be handling different parts.
@@ -130,7 +131,7 @@ function RenderCampsite({campsite}) { //campsite is this Functional Component's 
     return (
         <div className="col-md-5 m-1">
             <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/}
-                <CardImg top src={campsite.image} alt={campsite.name} />
+                <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
                 <CardBody>
                     <CardText>{campsite.description}</CardText>
                 </CardBody>

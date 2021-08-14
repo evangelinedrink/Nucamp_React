@@ -1,0 +1,1 @@
+export const baseUrl= "http://localhost:3001/";  //We can use this constant URL in any part of our code (this is a shortcut to typing out all the time the URL)

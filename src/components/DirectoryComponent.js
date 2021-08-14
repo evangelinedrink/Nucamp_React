@@ -3,6 +3,7 @@ import React from "react"; //Importing React and Component
 import {Card, CardImg, CardImgOverlay, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap"; //Importing ReactStrap Card component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
 import {Loading} from "./LoadingComponent";
+import {baseUrl} from "../shared/baseUrl"; //This will import the constant for the address of the json-server
 
 //The Directory Class Component will be turned into two smaller Functional Components
 //RenderDirectoryItem Functional Component will be responsible for rendering each card with different campsite details
@@ -14,7 +15,7 @@ function RenderDirectoryItem({campsite}) {
             {/*Link is used so we can look into more details of the campsite when its url has "/director/idNumber", such as "directory/2" for a campsite with id 2 (it will show the user information for campsite with id 2). */}
             {/*With Link, we are creating a dynamic link with JavaScript. Template literal is being used here. */}
             <Link to={`/directory/${campsite.id}`}>
-                <CardImg width="100%" src={campsite.image} alt={campsite.name} />
+                <CardImg width="100%" src={baseUrl + campsite.image} alt={campsite.name} /> {/*We are getting the image from the server, not from the client side */}
                 <CardImgOverlay>
                     <CardTitle>{campsite.name}</CardTitle>
                 </CardImgOverlay>

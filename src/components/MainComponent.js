@@ -12,7 +12,7 @@ import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Importin
 import {connect} from "react-redux"; //connection
 import {actions} from "react-redux-form"; //actions from the react-redux-form that will make an action creator named actions.reset available to us which will be used to the mapDispatchToProps
 //Making the fetchCampsites Action Creator available to MainComponent.js in the code below
-import {addComment, fetchCampsites} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
+import {addComment, fetchCampsites, fetchComments, fetchPromotions} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
 
 
 //Application data is no longer stored in the Main Component state, it will be transfered to the Redux Store. This is why the data below is commented out.
@@ -34,12 +34,15 @@ const mapStateToProps= state => {
 
 //Setting up mapDispatchToProps, which will call the Redux Store's dispatch method for us
 //You can setup mapDispatchToProps as an object or as a function. The recommended way is to set it up as an object
+//setting up the mapDispatchToProps makes it easy to dispatch actions to the Redux Store
 const mapDispatchToProps=  {
   addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)), //We are calling the Action Creator in this arrow function's body. We are passing in the campsiteId, rating, author and text.
   //For the code below, we don't pass in anything in the parameter, but we will let it call the fetchCamspites Action Creator in the body of this fetchCampsites method. 
   //This fetchCampsites Action Creator is now available to the Main Component to be passed into elements/components as a prop
   fetchCampsites: () => (fetchCampsites()), //We are adding the fetchCampsites Action Creator (which is a method, thus a function (this is why we are using arrow function to create it here)) to the mapDispatchToProps, that way fetchCampsites can be used as a prop to different elements/components and fetchCampsites will be called to work whenever a user does something to the elements/components
-  resetFeedbackForm: () => (actions.reset("feedbackForm"))//We are using the model name that is being used for the entire Contact Us form. That model name was feedbackForm
+  resetFeedbackForm: () => (actions.reset("feedbackForm")), //We are using the model name that is being used for the entire Contact Us form. That model name was feedbackForm
+  fetchComments: () => (fetchComments()), //Calling in the fetchComments Action Creator
+  fetchPromotions: () => (fetchPromotions()),
 };
 
 class Main extends Component {
@@ -65,6 +68,8 @@ class Main extends Component {
   //componentDidMount() is called right after a React Component is created and inserted in the DOM
   componentDidMount() {
       this.props.fetchCampsites();
+      this.props.fetchComments();
+      this.props.fetchPromotions();
   }
 
 
@@ -83,7 +88,9 @@ class Main extends Component {
             campsite={this.props.campsites.campsites.filter(campsite => campsite.featured)[0]}
             campsitesLoading= {this.props.campsites.isLoading} //We are passing in the isLoading property of the campsite's state object
             campsitesErrMess= {this.props.campsites.errMess} //We are passing in the errMess property of the campsite's state object
-            promotion={this.props.promotions.filter(promotion => promotion.featured)[0]}
+            promotion={this.props.promotions.promotions.filter(promotion => promotion.featured)[0]} //The first promotions points to the promotions object, the second promotions points to the promotions array inside of that promotions object
+            promotionLoading={this.props.promotions.isLoading}
+            promotionErrMess={this.props.promotions.errMess}
             partner={this.props.partners.filter(partner => partner.featured)[0]}
         />
       );
@@ -105,7 +112,8 @@ class Main extends Component {
           campsite={this.props.campsites.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}
           isLoading= {this.props.campsites.isLoading} //We are passing in the isLoading property of the campsite's state object
           errMess= {this.props.campsites.errMess} //We are passing in the errMess property of the campsite's state object
-          comments={this.props.comments.filter(comment => comment.campsiteId === +match.params.campsiteId)} 
+          comments={this.props.comments.comments.filter(comment => comment.campsiteId === +match.params.campsiteId)} 
+          commentsErrMess={this.props.comments.errMess}
           addComment={this.props.addComment} //We are now passing in the Add_Comment function to the CampsiteInfo component as a prop.
           />
       );

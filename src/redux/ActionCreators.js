@@ -1,6 +1,7 @@
 //Importing the Action Types from the ActionTypes.js file. We are using a wildcard, *, that lets us import all the named exports from the ActionTypes.js file at once
 import * as ActionTypes from "./ActionTypes"; //We can access the exports using the Action Types namespace that is defined as ActionTypes
-import {CAMPSITES} from "../shared/campsites"; //Importing the Campsites data to this module so we can use it in our server's simulation
+import {baseUrl} from "../shared/baseUrl";
+//import {CAMPSITES} from "../shared/campsites"; //Importing the Campsites data to this module so we can use it in our server's simulation
 
 //We are passing in all the values that are needed to add a comment: campsiteId, rating, author and comment text
 //This action creator will return an object  as its properties and type as a payload
@@ -17,13 +18,19 @@ export const addComment= (campsiteId, rating, author, text) => ({
 //We will be using Redux Thunk to perform an Asynchronous Request to the server. However, we have not yet created a server to do this. We will pretend we are talking to a server by creating a brief delay using the set.timeout function. After the delay, we will add the campsites data to the state.
 //This is an Action Creator called fetchCampsites. The Redux Thunk syntax is shown below by wrapping the function in another function and Redux Thunk will let us pass the Store's dispatch method into the inner function
 //Then we can use that dispatch method to dispatch a different action called campsitesLoading. 
-//setTimeout will give us a brief delay of 2000 miliseconds (or 2 seconds). AFter the delay, we will dispatch another action called addCampsites along with the data from the CAMPSITES array.
+ //fetchCampsites Action Creator will get the data (campsites array) from the server and will then pass it to the addCampsites Action Creator
  export const fetchCampsites= () => dispatch => { //The two arrows shows that we nested a function inside another arrow function. We can nest arrow functions like this thanks to Redux Thunk.
      dispatch(campsitesLoading());
 
-     setTimeout(() => {
+     //This is a call to Fetch. We must give Fetch a URL as a parameter. baseUrl + campsites is the location of the resource that we want
+     return fetch(baseUrl +"campsites")
+            .then(response => response.json()) //Call to Fetch will return a JavaScript Promise. The .json() method will convert the response to JSON to JavaScript. This will be the array of campsites.
+            //Array of campsites is returned from the above .then() method, which is why another .then() method is chained here (code below). the campsites is the array of campsites that will be dispatched to the addCampsites Action Creator to be used as its payload.
+            .then(campsites => dispatch(addCampsites(campsites)));
+     //setTimeout will give us a brief delay of 2000 miliseconds (or 2 seconds). AFter the delay, we will dispatch another action called addCampsites along with the data from the CAMPSITES array.
+     /*setTimeout(() => {
          dispatch(addCampsites(CAMPSITES));
-     }, 2000);
+     }, 2000);*/
  };
 
  //This is the campsitesLoading Action Creator. There is only one arrow, so this is a standard Action Creator that returns an action object and nothing else.
@@ -46,3 +53,56 @@ export const addComment= (campsiteId, rating, author, text) => ({
      type: ActionTypes.ADD_CAMPSITES,
      payload: campsites
  });  
+
+ //This Action Creator will be used to fetch (get) the comments for the campsites
+ //fetchComments action creator will be a Thunk function
+ export const fetchComments = () => dispatch => {
+     return fetch(baseUrl + "comments") //This will return a Promise with an array of comments
+        .then(response => response.json()) //This will turn the comments array, which is a .json file, into a JavaScript array
+        .then(comments => dispatch(addComments(comments)));//If the above line works, the comments will then be dispatched to the Redux Store by being sent to the addComments Action Creator
+ };
+
+ //Two more Action Creators to handle the campsites' comments that return Action Objects (they won't be using Redux Thunk)
+ //commentsFailed Action Creator will have a parameter of errMess and will create an object with the type of ActionTypes.Comments_Failed and the payload that will contain the errors message
+ export const commentsFailed= errMess => ({
+     type: ActionTypes.COMMENTS_FAILED,
+     payload: errMess
+ });
+
+ //addComments action creator will have the parameter of comments, type of ActionTypes.add_comments, and a payload of the argument passed in as comments
+ export const addComments = comments => ({
+     type: ActionTypes.ADD_COMMENTS,
+     payload: comments
+ });
+
+ //fetchPromotions Action Creator will be Thunked. fetchPromotions will have the same code as the fetchCampsites Action Creator
+ //fetchPromotions Action Creator will get the data (promotions array) from the server and will then pass it to the 
+ export const fetchPromotions= () => dispatch => { //The two arrows shows that we nested a function inside another arrow function. We can nest arrow functions like this thanks to Redux Thunk.
+    dispatch(promotionsLoading());
+
+    //This is a call to Fetch. We must give Fetch a URL as a parameter. baseUrl + promotions is the location of the resource that we want
+    return fetch(baseUrl +"promotions")
+           .then(response => response.json()) //Call to Fetch will return a JavaScript Promise. The .json() method will convert the response to JSON to JavaScript. This will be the array of promotions.
+           //Array of promotions is returned from the above .then() method, which is why another .then() method is chained here (code below). promotions is the array of promotions that will be dispatched to the addPromotions Action Creator to be used as its payload.
+           .then(promotions => dispatch(addPromotions(promotions)));
+};
+
+ //This is the promotionsLoading Action Creator. There is only one arrow, so this is a standard Action Creator that returns an action object and nothing else.
+ //This action will not have a payload, it will just have a type. Because it is not Thunked, it is not being intercepted, it will go straight to the Reducer as normal.
+ //promotionsLoading action is the one that is dispatched from fetchPromotions, so when the fetchPromotions is dispatched, that action will dispatch the promotionsLoading action creator.
+ export const promotionsLoading= () => ({
+    type: ActionTypes.PROMOTIONS_LOADING
+}); 
+
+//Two more Action Creators to handle the promotions' comments that return Action Objects (they won't be using Redux Thunk)
+//promotionsFailed Action Creator will have a parameter of errMess and will create an object with the type of ActionTypes.Promotions_Failed and the payload that will contain the errors message
+export const promotionsFailed= errMess => ({
+    type: ActionTypes.PROMOTIONS_FAILED,
+    payload: errMess
+});
+
+//addComments action creator will have the parameter of comments, type of ActionTypes.add_comments, and a payload of the argument passed in as comments
+export const addPromotions = promotions => ({
+    type: ActionTypes.ADD_PROMOTIONS,
+    payload: promotions
+});
