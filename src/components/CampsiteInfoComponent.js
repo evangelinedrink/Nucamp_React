@@ -47,7 +47,7 @@ class CommentForm extends React.Component {
     handleSubmit(values) {
         this.toggleModal();
         //When the form is submitted, the ADD_Comment action creator will create an action using the values from this form. Then that action will get dispatch to its reducer that will then update the state.
-        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text);
+        this.props.postComment(this.props.campsiteId, values.rating, values.author, values.text);
     }
 
     render() {
@@ -171,7 +171,7 @@ function RenderCampsite(campsite) { //campsite is this Functional Component's on
 */
 
 //RenderComments Functional Method. Its parameter, {comments, addComment, campsiteId}, has been destructured. comments has been defined in the render() method by using comments = this.props.campsite.comments. This is why we don't have to write this.props.campsites.comments here to get the comments data.
-function RenderComments({comments, addComment, campsiteId}) { //Takes the comments array stored in the campsite object as a parameter, thus renderComments(comments)
+function RenderComments({comments, postComment, campsiteId}) { //Takes the comments array stored in the campsite object as a parameter, thus renderComments(comments)
     if(comments) { //Check to see that comments are not null or undefined (this would make if(comments) = false).
         return (
             <div className="col-md-5 m-1"> {/*Bootstrap column classes that occupies 5 columns for viewports md and above */}
@@ -193,7 +193,7 @@ function RenderComments({comments, addComment, campsiteId}) { //Takes the commen
                 }
 
                 {/*Displaying (rendering) the Submit Comment button. We are passing in the props campsiteId, addComment to the CommentForm component. We will now be able to see the users added comment to the comment list (the comment id will also be included).*/}
-                <CommentForm campsiteId={campsiteId} addComment={addComment}/>
+                <CommentForm campsiteId={campsiteId} postComment={postComment}/>
             </div>
         )
     }
@@ -254,7 +254,7 @@ function CampsiteInfo(props) {
                     {/*Since comments is within the campsite object, we have to use props.campsite.comments */}
                     <RenderComments 
                         comments={props.comments}
-                        addComment={props.addComment}//Passing in the ADD_Comment prop to the RenderComments component
+                        postComment={props.postComment}//Passing in the ADD_Comment prop to the RenderComments component
                         campsiteId= {props.campsite.id}
                     /> 
                 </div>

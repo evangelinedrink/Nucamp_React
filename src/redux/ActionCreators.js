@@ -3,17 +3,7 @@ import * as ActionTypes from "./ActionTypes"; //We can access the exports using 
 import {baseUrl} from "../shared/baseUrl";
 //import {CAMPSITES} from "../shared/campsites"; //Importing the Campsites data to this module so we can use it in our server's simulation
 
-//We are passing in all the values that are needed to add a comment: campsiteId, rating, author and comment text
-//This action creator will return an object  as its properties and type as a payload
-export const addComment= (campsiteId, rating, author, text) => ({
-    type: ActionTypes.ADD_COMMENT, //This is the ActionTypes namespace that is defined in line 2. This lets us access the ADD_COMMENT export that we made in the ActionTypes.js file (without having to define it in the import)
-    payload: { //Payload contains the data that we are trying to change in the State
-        campsiteId: campsiteId, //In ES6, when the identifier of a property is the same as its value, we can pass it with just campsiteId (instead of campsiteId: campsiteId)
-        rating: rating,
-        author: author,
-        text: text,
-    }
-});
+
 
 //We will be using Redux Thunk to perform an Asynchronous Request to the server. However, we have not yet created a server to do this. We will pretend we are talking to a server by creating a brief delay using the set.timeout function. After the delay, we will add the campsites data to the state.
 //This is an Action Creator called fetchCampsites. The Redux Thunk syntax is shown below by wrapping the function in another function and Redux Thunk will let us pass the Store's dispatch method into the inner function
@@ -73,6 +63,70 @@ export const addComment= (campsiteId, rating, author, text) => ({
      type: ActionTypes.ADD_CAMPSITES,
      payload: campsites
  });  
+
+ //We are passing in all the values that are needed to add a comment: campsiteId, rating, author and comment text
+//This action creator will return an object  as its properties and type as a payload
+//addComments Action Creator will be split into two different parts. The original addComment is one Action Creator and is seen commented out below.
+//addComment Action Creator will be working here
+export const addComment= comment => ({
+    type: ActionTypes.ADD_COMMENT, //This is the ActionTypes namespace that is defined in line 2. This lets us access the ADD_COMMENT export that we made in the ActionTypes.js file (without having to define it in the import)
+    payload: comment
+})
+
+//postComment Action Creator will handle the asynchronous call to Fetch and will actually post the new comment to the server. It will have to be Thunked (nesting two functions). Dispatch argument, so it will be passed in the inner function  
+//postComment Action Creator is using Thunk middleware so it can handle asynchronous calls inside of it. Get rid 
+export const postComment= (campsiteId, rating, author, text) => dispatch => {
+    //Make the payload property as a constant. We will make it an object that holds hte same properties as before 
+    const newComment= { //Payload contains the data that we are trying to change in the State
+        campsiteId: campsiteId, //In ES6, when the identifier of a property is the same as its value, we can pass it with just campsiteId (instead of campsiteId: campsiteId)
+        rating: rating,
+        author: author,
+        text: text,
+    };
+    //Adding a date to the new comment object. The date isn't being passed in, we are generating a new Date property right here in the Action Creator. It will grab whatever date it is when this code is executed
+    newComment.date = new Date().toISOString();
+    //return a call to Fetch and give it a URL + comments. We will pass Fetch an optional second argument, which will be in the form of an object.
+    //In this object we will add a property to POST (HTML verb). 
+    return fetch(baseUrl + "comments", {
+        method: "POST", //Property to specifiy the REquest Method named Post. If we don't specify the method, the default HTTP request method for Fetch is Get (which is what we have been using so far)
+        body: JSON.stringify(newComment), //We will need to supply a body property for this request. The body is going to be a JSON encoded version of the object that we created above (which is newComment). JSON.stringify converts a JavaScript value to a JavaScript Object Notation (JSON) string
+        headers: { //Headers property needs to be an object so it can hold one or more headers.
+            "Content-Type": "application/json" //Server knows to expect the body to be formated as JSON
+        } 
+    })
+    //We need to handle the resolve or reject from this Promise with a Then Method
+    .then(response => {
+        if (response.ok) {
+            return response; //The response will then continue in the Promise chain
+        } else { //This is if the response is not okay (there is an error)
+            const error= new Error(`Error ${response.status}: ${response.statusText}`); //Status and Status Text are built in responses from Fetch. They will make our error message more informative
+            error.response = response;
+            throw error; //Will send the error straight to the catch method (error function) because of the JavaScript throw keyword
+        }
+    },
+    //A Promise can resolve or reject and we can add a second callback function to the then method to handle a rejected promise (we did not get a response from the server)
+    //This error will be displayed when the server gives no response (neither good or bad)
+    error => { throw error; } //This is what will happen when the error is rejected
+    )
+    //Promise Chain
+    .then(response => response.json()) //When the POST request is succesfful, the JSON server will send back the data that you sent (like an echo) but it will automatically insert a unique ID with it. You convert that response back to JavaScript using .json() method
+    .then(response => dispatch(addComment(response)))
+    .catch(error => { //This will catch any rejected Promises
+        console.log("post comment", error.message); //Posting the comment so we know that it is coming from the postComment Action Creator 
+        alert("Your comment could not be posted\n Error: " + error.message);
+    }); 
+};
+/*
+export const addComment= (campsiteId, rating, author, text) => ({
+    type: ActionTypes.ADD_COMMENT, //This is the ActionTypes namespace that is defined in line 2. This lets us access the ADD_COMMENT export that we made in the ActionTypes.js file (without having to define it in the import)
+    payload: { //Payload contains the data that we are trying to change in the State
+        campsiteId: campsiteId, //In ES6, when the identifier of a property is the same as its value, we can pass it with just campsiteId (instead of campsiteId: campsiteId)
+        rating: rating,
+        author: author,
+        text: text,
+    }
+});
+*/
 
  //This Action Creator will be used to fetch (get) the comments for the campsites
  //fetchComments action creator will be a Thunk function
