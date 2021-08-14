@@ -24,9 +24,29 @@ export const addComment= (campsiteId, rating, author, text) => ({
 
      //This is a call to Fetch. We must give Fetch a URL as a parameter. baseUrl + campsites is the location of the resource that we want
      return fetch(baseUrl +"campsites")
+     //First then method will run when the Promise of this return responds, just because the server returns a response doesn't mean all is well. The server could have returned a bad response (like a 404 code). 
+     //If you get a reponse from the server, the Promise will consider that as being resolved, not rejected. It would be rejected if we never got a response from the server.
+     //Fetch validates the response from the server (by using okay), the property response of "ok" will be set for true for a response of status code in the successful range (200-299). "Okay" would be false if it is not successful 
+                .then(response => {
+                    if (response.ok) {
+                        return response; //The response will then continue in the Promise chain
+                    } else { //This is if the response is not okay (there is an error)
+                        const error= new Error(`Error ${response.status}: ${response.statusText}`); //Status and Status Text are built in responses from Fetch. They will make our error message more informative
+                        error.response = response;
+                        throw error; //Will send the error straight to the catch method (error function) because of the JavaScript throw keyword
+                    }
+                },
+                //A Promise can resolve or reject and we can add a second callback function to the then method to handle a rejected promise (we did not get a response from the server)
+                //This error will be displayed when the server gives no response (neither good or bad)
+                error => {
+                    const errMess = new Error(error.message);
+                    throw errMess;
+                }
+                )
             .then(response => response.json()) //Call to Fetch will return a JavaScript Promise. The .json() method will convert the response to JSON to JavaScript. This will be the array of campsites.
             //Array of campsites is returned from the above .then() method, which is why another .then() method is chained here (code below). the campsites is the array of campsites that will be dispatched to the addCampsites Action Creator to be used as its payload.
-            .then(campsites => dispatch(addCampsites(campsites)));
+            .then(campsites => dispatch(addCampsites(campsites)))
+            .catch(error => dispatch(campsitesFailed(error.message))); //Catch method is used for errors. If any of these promises are rejected, they will also be caught in this catch method.
      //setTimeout will give us a brief delay of 2000 miliseconds (or 2 seconds). AFter the delay, we will dispatch another action called addCampsites along with the data from the CAMPSITES array.
      /*setTimeout(() => {
          dispatch(addCampsites(CAMPSITES));
@@ -58,8 +78,25 @@ export const addComment= (campsiteId, rating, author, text) => ({
  //fetchComments action creator will be a Thunk function
  export const fetchComments = () => dispatch => {
      return fetch(baseUrl + "comments") //This will return a Promise with an array of comments
+        .then(response => {
+                if (response.ok) {
+                    return response; //The response will then continue in the Promise chain
+                } else { //This is if the response is not okay (there is an error)
+                    const error= new Error(`Error ${response.status}: ${response.statusText}`); //Status and Status Text are built in responses from Fetch. They will make our error message more informative
+                    error.response = response;
+                    throw error; //Will send the error straight to the catch method (error function) because of the JavaScript throw keyword
+                }
+            },
+            //A Promise can resolve or reject and we can add a second callback function to the then method to handle a rejected promise (we did not get a response from the server)
+            //This error will be displayed when the server gives no response (neither good or bad)
+            error => {
+                const errMess = new Error(error.message);
+                throw errMess;
+            }
+        )
         .then(response => response.json()) //This will turn the comments array, which is a .json file, into a JavaScript array
-        .then(comments => dispatch(addComments(comments)));//If the above line works, the comments will then be dispatched to the Redux Store by being sent to the addComments Action Creator
+        .then(comments => dispatch(addComments(comments)))//If the above line works, the comments will then be dispatched to the Redux Store by being sent to the addComments Action Creator
+        .catch(error => dispatch(commentsFailed(error.message))); //Catch method will get the commentsFailed action
  };
 
  //Two more Action Creators to handle the campsites' comments that return Action Objects (they won't be using Redux Thunk)
@@ -82,9 +119,26 @@ export const addComment= (campsiteId, rating, author, text) => ({
 
     //This is a call to Fetch. We must give Fetch a URL as a parameter. baseUrl + promotions is the location of the resource that we want
     return fetch(baseUrl +"promotions")
+            .then(response => {
+                if (response.ok) {
+                    return response; //The response will then continue in the Promise chain
+                } else { //This is if the response is not okay (there is an error)
+                    const error= new Error(`Error ${response.status}: ${response.statusText}`); //Status and Status Text are built in responses from Fetch. They will make our error message more informative
+                    error.response = response;
+                    throw error; //Will send the error straight to the catch method (error function) because of the JavaScript throw keyword
+                }
+                },
+                //A Promise can resolve or reject and we can add a second callback function to the then method to handle a rejected promise (we did not get a response from the server)
+                //This error will be displayed when the server gives no response (neither good or bad)
+                error => {
+                    const errMess = new Error(error.message);
+                    throw errMess;
+                }
+            )
            .then(response => response.json()) //Call to Fetch will return a JavaScript Promise. The .json() method will convert the response to JSON to JavaScript. This will be the array of promotions.
            //Array of promotions is returned from the above .then() method, which is why another .then() method is chained here (code below). promotions is the array of promotions that will be dispatched to the addPromotions Action Creator to be used as its payload.
-           .then(promotions => dispatch(addPromotions(promotions)));
+           .then(promotions => dispatch(addPromotions(promotions)))
+           .catch(error => dispatch(promotionsFailed(error.message)));
 };
 
  //This is the promotionsLoading Action Creator. There is only one arrow, so this is a standard Action Creator that returns an action object and nothing else.
