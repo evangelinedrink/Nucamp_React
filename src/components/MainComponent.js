@@ -127,6 +127,7 @@ class Main extends Component {
           {/*Transition Group that will help us use React Transition Group components to the Routes in our application */}
           <TransitionGroup>
             <CSSTransition key={this.props.location.key} classNames="page" timeout={300}> {/*CSS Transition requires a unique key. classNames is an attribute for CSS Transition (it is used for the CSS classes in App.css) */}
+            
             {/*Any Router Request will go through this Switch propsment until it finds a matching route */}
             <Switch>
                 <Route path="/home" component={HomePage} /> {/*HomePage is an arrow function (lines 33-45) that filters and obtains the featured campsite, partner and promotion's objects (includes the name, image and description for each) */}
@@ -150,6 +151,7 @@ class Main extends Component {
                 
                 <Redirect to="/home" /> {/*Redirect component acts as a catch all (so it is like a Default propsment in a JavaScript Switch propsment) */}
             </Switch>
+            
             </CSSTransition>
           </TransitionGroup>
 

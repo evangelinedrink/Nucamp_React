@@ -2,7 +2,7 @@ import React from "react";
 import {Card, CardImg, CardText, CardBody, CardTitle} from "reactstrap";
 import {Loading} from "./LoadingComponent"; //Importing the Loading component
 import {baseUrl} from "../shared/baseUrl";
-
+import {FadeTransform} from "react-animation-components";
 
 //Functional Component named RenderCard (is is a purely presentational component)
 //Destructuring item from props
@@ -18,13 +18,20 @@ function RenderCard({item, isLoading, errMess}) {
 
     //If isLoading and errMess are falsy, we can then return the Card Component which has information about the Campsites, Partners and Promotions
     return (
-        <Card>
-            <CardImg src={baseUrl + item.image} alt={item.name} />
-            <CardBody>
-                <CardTitle>{item.name} </CardTitle>
-                <CardText>{item.description}</CardText>
-            </CardBody>
-        </Card>
+        <FadeTransform 
+            in
+            transformProps={{
+                exitTransform: "scale(0.5) translateY(50%)"
+            }} 
+            >
+            <Card>
+                <CardImg src={baseUrl + item.image} alt={item.name} />
+                <CardBody>
+                    <CardTitle>{item.name} </CardTitle>
+                    <CardText>{item.description}</CardText>
+                </CardBody>
+            </Card>
+        </FadeTransform>
     )
 }
 

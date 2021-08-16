@@ -4,6 +4,7 @@ import {Link} from "react-router-dom"; //Importing Link from React Router DOM (L
 import {Control, LocalForm, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
 import {Loading} from "./LoadingComponent";
 import {baseUrl} from "../shared/baseUrl";
+import {FadeTransform, Fade, Stagger} from "react-animation-components";
 
 //CampsiteInfo Class component is going to be split up into three Functional Components (one for each of the methods that were in the Class Component)
 //By creating three Functional Components (one for each method), we will not have one big Class Component handling everything. Each Functional Component will be handling different parts.
@@ -130,12 +131,19 @@ class CommentForm extends React.Component {
 function RenderCampsite({campsite}) { //campsite is this Functional Component's only parameter in its parameter list. Curly braces destructures it, so that we don't need the name of the parameter (in this case it is campsite)
     return (
         <div className="col-md-5 m-1">
-            <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/}
-                <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
-                <CardBody>
-                    <CardText>{campsite.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform
+                in 
+                transformProps= {{
+                    exitTransform: "scale(0.5) translateY(-50%)"
+                }}
+            >
+                <Card> {/*If there is an Object in Campsite, campsite=true, then a Card will be displayed that shows the campsite and its descriptions*/}
+                    <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
+                    <CardBody>
+                        <CardText>{campsite.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         </div>
     )
 }
@@ -176,22 +184,25 @@ function RenderComments({comments, postComment, campsiteId}) { //Takes the comme
         return (
             <div className="col-md-5 m-1"> {/*Bootstrap column classes that occupies 5 columns for viewports md and above */}
                 <h4>Comments</h4>
-                {/*Curly Brackes below is going to be used to embed a JavaScript expression within JSX */}
-                {
-                    comments.map(comment => {
-                        return ( //The return will ensure that the values posted below will show in the webpage.
-                            <div key={comment.id}> {/*JSX can only have one element. Always have the unique ID for each element in an array. */}
-                                <p>{comment.text}</p> {/*Displaying the text of the comment*/}
-                                <p>
-                                    {comment.author} {/*Displaying the author of the comment*/}     
-                                </p> 
-                                {/*Displaying the date of the comment */}
-                                <p>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
-                            </div>
-                        );
-                    })
-                }
-
+                <Stagger in>
+                    {/*Curly Brackes below is going to be used to embed a JavaScript expression within JSX */}
+                    {
+                        comments.map(comment => {
+                            return ( //The return will ensure that the values posted below will show in the webpage.
+                                <Fade in key={comment.id}>
+                                    <div> {/*JSX can only have one element. Always have the unique ID for each element in an array. */}
+                                        <p>{comment.text}</p> {/*Displaying the text of the comment*/}
+                                        <p>
+                                            {comment.author} {/*Displaying the author of the comment*/}     
+                                        </p> 
+                                        {/*Displaying the date of the comment */}
+                                        <p>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
+                                    </div>
+                                </Fade>
+                            );
+                        })
+                    }
+                </Stagger>
                 {/*Displaying (rendering) the Submit Comment button. We are passing in the props campsiteId, addComment to the CommentForm component. We will now be able to see the users added comment to the comment list (the comment id will also be included).*/}
                 <CommentForm campsiteId={campsiteId} postComment={postComment}/>
             </div>
