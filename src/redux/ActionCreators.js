@@ -74,7 +74,7 @@ export const addComment= comment => ({
 })
 
 //postComment Action Creator will handle the asynchronous call to Fetch and will actually post the new comment to the server. It will have to be Thunked (nesting two functions). Dispatch argument, so it will be passed in the inner function  
-//postComment Action Creator is using Thunk middleware so it can handle asynchronous calls inside of it. Get rid 
+//postComment Action Creator is using Thunk middleware so it can handle asynchronous calls inside of it.  
 export const postComment= (campsiteId, rating, author, text) => dispatch => {
     //Make the payload property as a constant. We will make it an object that holds hte same properties as before 
     const newComment= { //Payload contains the data that we are trying to change in the State
@@ -261,3 +261,40 @@ export const fetchPartners= () => dispatch => { //The two arrows shows that we n
            .then(partners => dispatch(addPartners(partners)))
            .catch(error => dispatch(partnersFailed(error.message)));
 };
+
+//postFeedback action creator that takes a feedback object as an argument and posts it to the server using Fetch
+//It will be Thunked, but we aren't dispatching anything to an addFeedback action
+export const postFeedback= (feedback) => () => {
+    //We will be using POST (HTML verb) to post the feedback object to the server using Fetch
+    return fetch(baseUrl + "feedback", {
+        method: "POST", //Property to specifiy the Request Method named Post. If we don't specify the method, the default HTTP request method for Fetch is Get (which is what we have been using so far)
+        body: JSON.stringify(feedback), //We will need to supply a body property for this request. The body is going to be a JSON encoded version of the object that we created above (which is feedback). JSON.stringify converts a JavaScript value to a JavaScript Object Notation (JSON) string
+        headers: {
+            "Content-Type": "application/json" //Server knows to expect the body to be formated as JSON
+        },
+    })
+
+    //We need to handle the resolve or reject from this Promise with a Then Method
+    .then(response => {
+        if (response.ok) {
+            return response; //The response will then continue in the Promise chain
+        } else { //This is if the response is not okay (there is an error)
+            const error= new Error(`Error ${response.status}: ${response.statusText}`); //Status and Status Text are built in responses from Fetch. They will make our error message more informative
+            error.response = response;
+            throw error; //Will send the error straight to the catch method (error function) because of the JavaScript throw keyword
+        }
+    },
+    //A Promise can resolve or reject and we can add a second callback function to the then method to handle a rejected promise (we did not get a response from the server)
+    //This error will be displayed when the server gives no response (neither good or bad)
+    error => { throw error; } //This is what will happen when the error is rejected
+    )
+    //Promise Chain
+    .then(response => response.json()) //When the POST request is succesfful, the JSON server will send back the data that you sent (like an echo) but it will automatically insert a unique ID with it. You convert that response back to JavaScript using .json() method
+    .then(response => { //Redux store will also be updated 
+        alert("Thank you for your feedback.\n" + "Feedback: " + JSON.stringify(response)); //Displays the contents of the Feedback object with: JSON.stringify(response)
+    }) 
+    .catch(error => { //This will catch any rejected Promises
+        alert("Your feedback was not received.\n Error: " + error.message);
+    }); 
+
+}

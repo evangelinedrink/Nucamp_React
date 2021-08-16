@@ -12,7 +12,7 @@ import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Importin
 import {connect} from "react-redux"; //connection
 import {actions} from "react-redux-form"; //actions from the react-redux-form that will make an action creator named actions.reset available to us which will be used to the mapDispatchToProps
 //Making the fetchCampsites Action Creator available to MainComponent.js in the code below
-import {postComment, fetchCampsites, fetchComments, fetchPromotions, fetchPartners} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
+import {postComment, fetchCampsites, fetchComments, fetchPromotions, fetchPartners, postFeedback} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 
@@ -45,6 +45,7 @@ const mapDispatchToProps=  {
   fetchComments: () => (fetchComments()), //Calling in the fetchComments Action Creator
   fetchPromotions: () => (fetchPromotions()),
   fetchPartners: () => (fetchPartners()),
+  postFeedback: (response) => (postFeedback(response)), //You need to pass in the response object, otherwise you won't be able to see the values written by the user in the alert after the user submits the information in the form.
 };
 
 class Main extends Component {
@@ -153,7 +154,7 @@ class Main extends Component {
                 
                 {/*Routing the Contact Component. This line below is telling our app to watch the browser address bar. Whenever the route in the address bar matches /contactus, then the Contact Component will be shown in the webpage */}
                 {/*Passing in the the Reset Feedback Form function the contact component as a prop. Since we are passing in a prop to Contact, we will need to change the attribute to a render attribute and set it up as an error function*/}
-                <Route exact path="/contactus" render={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
+                <Route exact path="/contactus" render={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} postFeedback={this.props.postFeedback}/>} />
                 
                 <Redirect to="/home" /> {/*Redirect component acts as a catch all (so it is like a Default propsment in a JavaScript Switch propsment) */}
             </Switch>

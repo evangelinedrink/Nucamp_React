@@ -61,8 +61,11 @@ class Contact extends Component {
 
     //handleSubmit method that will log the current state to the console.
     handleSubmit(values) {
-        console.log("Current state is: " + JSON.stringify(values)); //console log expects a string and not an object. JavaScript has a handy tool called JSON.stringify that will turn an object into a string  
-        alert("Current state is: " + JSON.stringify(values)); //This will produce an alert
+        //console.log("Current state is: " + JSON.stringify(values)); //console log expects a string and not an object. JavaScript has a handy tool called JSON.stringify that will turn an object into a string  
+        //alert("Current state is: " + JSON.stringify(values)); //This will produce an alert
+        
+        //The values object will be received in the postFeedback function in ActionCreators.js as the feedback object.
+        this.props.postFeedback(values); //Calling the postFeedback method and passing in the values object to the postFeedback method
         this.props.resetFeedbackForm(); //This will make sure when the form is submitted, the form values are reset to the initial values.
     }
 
