@@ -68,3 +68,24 @@ h2 {
 .navbar-dark {
   background-color: #901CAD;
 }
+
+/*Values from React Transition Group. All of the things used here are CSS properties, React Transition Group lets us use CSS properties in React-Redux applications*/
+.page-enter {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+
+.page-enter-active {
+  opacity: 1;
+  transform: translateX(0%);
+  transition: 300ms ease-out; /*Ease-out for animations that are coming in*/
+}
+
+.page-exit {
+  opacity: 1;
+}
+
+.page-exit-active {
+  opacity: 0;
+  transition: 300ms ease-in; /*Ease-in for animations that are going out*/
+}

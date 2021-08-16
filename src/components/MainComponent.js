@@ -13,6 +13,7 @@ import {connect} from "react-redux"; //connection
 import {actions} from "react-redux-form"; //actions from the react-redux-form that will make an action creator named actions.reset available to us which will be used to the mapDispatchToProps
 //Making the fetchCampsites Action Creator available to MainComponent.js in the code below
 import {postComment, fetchCampsites, fetchComments, fetchPromotions} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 
 //Application data is no longer stored in the Main Component state, it will be transfered to the Redux Store. This is why the data below is commented out.
@@ -123,30 +124,34 @@ class Main extends Component {
       <div>
         {/*Rendering the Header Component*/}
         <Header />
-        
-        {/*Any Router Request will go through this Switch propsment until it finds a matching route */}
-        <Switch>
-            <Route path="/home" component={HomePage} /> {/*HomePage is an arrow function (lines 33-45) that filters and obtains the featured campsite, partner and promotion's objects (includes the name, image and description for each) */}
-            
-            {/*Directory Component is getting the campsites data from the CAMPSITES array as an attribute (by using campsites={this.props.campsites} ) */}
-            {/*In the Directory Component, we are pasing in props data (this is the campsites data), which is why the directory component uses this render arrow function syntax (this render arrow function is normally done when passing in props data as props) */}
-            <Route exact path="/directory" render={() => <Directory campsites={this.props.campsites} />} /> {/*The render function returns the Directory Component */}
-            
-            {/*Routing a path for when the url has "/directory/campsiteId", so when the website sees this url it will show information for that campsite with that id */}
-            {/*The colon in path tells the web browser that what  follows the forward slash, after the colon, is going to be a parameter. It will take whatever that paramater is and puts it in this property called campsite ID*/}
-            {/*campsiteId gets stored as a property of that parems object */}
-            {/*This Route's matched object gets passed to the campsite with the id component as a prop automically, we don't have to specify it. */}
-            <Route path="/directory/:campsiteId" component={CampsiteWithId} />
+          {/*Transition Group that will help us use React Transition Group components to the Routes in our application */}
+          <TransitionGroup>
+            <CSSTransition key={this.props.location.key} classNames="page" timeout={300}> {/*CSS Transition requires a unique key. classNames is an attribute for CSS Transition (it is used for the CSS classes in App.css) */}
+            {/*Any Router Request will go through this Switch propsment until it finds a matching route */}
+            <Switch>
+                <Route path="/home" component={HomePage} /> {/*HomePage is an arrow function (lines 33-45) that filters and obtains the featured campsite, partner and promotion's objects (includes the name, image and description for each) */}
+                
+                {/*Directory Component is getting the campsites data from the CAMPSITES array as an attribute (by using campsites={this.props.campsites} ) */}
+                {/*In the Directory Component, we are pasing in props data (this is the campsites data), which is why the directory component uses this render arrow function syntax (this render arrow function is normally done when passing in props data as props) */}
+                <Route exact path="/directory" render={() => <Directory campsites={this.props.campsites} />} /> {/*The render function returns the Directory Component */}
+                
+                {/*Routing a path for when the url has "/directory/campsiteId", so when the website sees this url it will show information for that campsite with that id */}
+                {/*The colon in path tells the web browser that what  follows the forward slash, after the colon, is going to be a parameter. It will take whatever that paramater is and puts it in this property called campsite ID*/}
+                {/*campsiteId gets stored as a property of that parems object */}
+                {/*This Route's matched object gets passed to the campsite with the id component as a prop automically, we don't have to specify it. */}
+                <Route path="/directory/:campsiteId" component={CampsiteWithId} />
 
-            {/*Routing the About Us Component. We are passing in the partners data from the Main Component to the About Component. Since the partners data is props data, we have to use the render arow function syntax, which was used for the Directory component above */}
-            <Route exact path="/aboutus" render={() => <About partners={this.props.partners} />} /> 
-            
-            {/*Routing the Contact Component. This line below is telling our app to watch the browser address bar. Whenever the route in the address bar matches /contactus, then the Contact Component will be shown in the webpage */}
-            {/*Passing in the the Reset Feedback Form function the contact component as a prop. Since we are passing in a prop to Contact, we will need to change the attribute to a render attribute and set it up as an error function*/}
-            <Route exact path="/contactus" render={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
-            
-            <Redirect to="/home" /> {/*Redirect component acts as a catch all (so it is like a Default propsment in a JavaScript Switch propsment) */}
-        </Switch>
+                {/*Routing the About Us Component. We are passing in the partners data from the Main Component to the About Component. Since the partners data is props data, we have to use the render arow function syntax, which was used for the Directory component above */}
+                <Route exact path="/aboutus" render={() => <About partners={this.props.partners} />} /> 
+                
+                {/*Routing the Contact Component. This line below is telling our app to watch the browser address bar. Whenever the route in the address bar matches /contactus, then the Contact Component will be shown in the webpage */}
+                {/*Passing in the the Reset Feedback Form function the contact component as a prop. Since we are passing in a prop to Contact, we will need to change the attribute to a render attribute and set it up as an error function*/}
+                <Route exact path="/contactus" render={()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} />} />
+                
+                <Redirect to="/home" /> {/*Redirect component acts as a catch all (so it is like a Default propsment in a JavaScript Switch propsment) */}
+            </Switch>
+            </CSSTransition>
+          </TransitionGroup>
 
          {/*Rendering the Footer Component */}     
          <Footer />  
