@@ -3,6 +3,7 @@ import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'r
 import { Link } from 'react-router-dom';
 import {Loading} from "./LoadingComponent"; //Importing the Loading component
 import {baseUrl} from "../shared/baseUrl"; //Importing baseUrl from the shared folder
+import {Fade, Stagger} from "react-animation-components"; //Importing Fade and Stagger to this file
 
 function About(props) {
 
@@ -38,11 +39,13 @@ function About(props) {
     function PartnerList(props) {
         const partners = props.partners.partners.map(partner => { //Since we didn't deconstruct the props out (we would do this by placing {partners} in the parameter list in line 38), we have to use props.partners.partners to refer to the partners array in the partners object. If we did the deconstruction in the parameter list, we could write in this line "partners.map"
             return (
-                <Media tag="li" key={partner.id}>
-                    {/*Rendering the RenderPartner component in this Media component.  */}
-                    {/*We are passing in the current partner object as a prop to the RenderPartner component. The name of this partner object is "partner" (its name is to the left of the equal sign). We dont have to call it partner, we could call it props, but in RenderPartners function, we would be destructuring props and not partners (tried this and it works) */}
-                    <RenderPartner partner={partner} />
-                </Media>
+                <Fade in key={partner.id}>
+                    <Media tag="li">
+                        {/*Rendering the RenderPartner component in this Media component.  */}
+                        {/*We are passing in the current partner object as a prop to the RenderPartner component. The name of this partner object is "partner" (its name is to the left of the equal sign). We dont have to call it partner, we could call it props, but in RenderPartners function, we would be destructuring props and not partners (tried this and it works) */}
+                        <RenderPartner partner={partner} />
+                    </Media>
+                </Fade>
             );
         });
 
@@ -66,7 +69,9 @@ function About(props) {
         return (
         <div className="col mt-4">
             <Media list>
-                {partners}
+                <Stagger in>
+                    {partners}
+                </Stagger>
             </Media>
         </div>
         );
