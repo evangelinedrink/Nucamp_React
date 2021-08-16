@@ -12,7 +12,7 @@ import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Importin
 import {connect} from "react-redux"; //connection
 import {actions} from "react-redux-form"; //actions from the react-redux-form that will make an action creator named actions.reset available to us which will be used to the mapDispatchToProps
 //Making the fetchCampsites Action Creator available to MainComponent.js in the code below
-import {postComment, fetchCampsites, fetchComments, fetchPromotions} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
+import {postComment, fetchCampsites, fetchComments, fetchPromotions, fetchPartners} from "../redux/ActionCreators"; //Adding the addComment from the ActionCreators 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 
@@ -44,6 +44,7 @@ const mapDispatchToProps=  {
   resetFeedbackForm: () => (actions.reset("feedbackForm")), //We are using the model name that is being used for the entire Contact Us form. That model name was feedbackForm
   fetchComments: () => (fetchComments()), //Calling in the fetchComments Action Creator
   fetchPromotions: () => (fetchPromotions()),
+  fetchPartners: () => (fetchPartners()),
 };
 
 class Main extends Component {
@@ -71,6 +72,7 @@ class Main extends Component {
       this.props.fetchCampsites();
       this.props.fetchComments();
       this.props.fetchPromotions();
+      this.props.fetchPartners();
   }
 
 
@@ -92,7 +94,10 @@ class Main extends Component {
             promotion={this.props.promotions.promotions.filter(promotion => promotion.featured)[0]} //The first promotions points to the promotions object, the second promotions points to the promotions array inside of that promotions object
             promotionLoading={this.props.promotions.isLoading}
             promotionErrMess={this.props.promotions.errMess}
-            partner={this.props.partners.filter(partner => partner.featured)[0]}
+            //We are passing in all the properties that are inside of the partners state (partners array, isLoading and errMess)
+            partner={this.props.partners.partners.filter(partner => partner.featured)[0]}
+            partnersLoading= {this.props.partners.isLoading}
+            partnersErrMess = {this.props.partners.errMess}
         />
       );
     }
@@ -121,12 +126,13 @@ class Main extends Component {
     };
 
     return (
+      /*CSS Transition requires a unique key. classNames is an attribute for CSS Transition (it is used for the CSS classes in App.css) */
+      /*Transition Group that will help us use React Transition Group components to the Routes in our application */
       <div>
         {/*Rendering the Header Component*/}
-        <Header />
-          {/*Transition Group that will help us use React Transition Group components to the Routes in our application */}
+        <Header />   
           <TransitionGroup>
-            <CSSTransition key={this.props.location.key} classNames="page" timeout={300}> {/*CSS Transition requires a unique key. classNames is an attribute for CSS Transition (it is used for the CSS classes in App.css) */}
+            <CSSTransition key={this.props.location.key} classNames="page" timeout={300}> 
             
             {/*Any Router Request will go through this Switch propsment until it finds a matching route */}
             <Switch>

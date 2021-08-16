@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Breadcrumb, BreadcrumbItem, Button, Label, Col, Row} from "reactstrap"; //Importing ReactStrap Card component
 import {Link} from "react-router-dom"; //Importing Link from React Router DOM (Link). Link creates links to a path, it is used just like an anchor element <a>
-import {Control, Form, Errors, actions} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
+import {Control, Form, Errors} from "react-redux-form"; //React-Redux-Form Will store the Form State in the Redux Store
 //Contact Form is going to use the Redux Store. All State data is stored in the Redux Store because it is the Single Source of Truth for the Application state.
 //React-Redux-Form Will store the Form State in the Redux Store
 

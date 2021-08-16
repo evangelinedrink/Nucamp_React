@@ -209,8 +209,55 @@ export const promotionsFailed= errMess => ({
     payload: errMess
 });
 
-//addComments action creator will have the parameter of comments, type of ActionTypes.add_comments, and a payload of the argument passed in as comments
+//addPromotions action creator will have the parameter of promotions, type of ActionTypes.add_comments, and a payload of the argument passed in as comments
 export const addPromotions = promotions => ({
     type: ActionTypes.ADD_PROMOTIONS,
     payload: promotions
 });
+
+//addPartners action creator will have the parameter of partners, type of ActionTypes.ADD_PARTNERS, and a payload of the argument passed in as partners
+export const addPartners = partners => ({
+    type: ActionTypes.ADD_PARTNERS,
+    payload: partners
+});
+
+ //This is the partnersLoading Action Creator. There is only one arrow, so this is a standard Action Creator that returns an action object and nothing else.
+ //This action will not have a payload, it will just have a type. Because it is not Thunked, it is not being intercepted, it will go straight to the Reducer as normal.
+ //partnersLoading action is the one that is dispatched from fetchPartners, so when the fetchPartners is dispatched, that action will dispatch(load) the partnersLoading action creator.
+ export const partnersLoading= () => ({
+    type: ActionTypes.PARTNERS_LOADING
+}); 
+
+//partnersFailed Action Creator will have a parameter of errMess and will create an object with the type of ActionTypes.PARTNERS_FAILED and the payload that will contain the errors message
+export const partnersFailed= errMess => ({
+    type: ActionTypes.PARTNERS_FAILED,
+    payload: errMess
+});
+
+//fetchPartners Action Creator will fetch the partners data from the server and update the Redux Store
+export const fetchPartners= () => dispatch => { //The two arrows shows that we nested a function inside another arrow function. We can nest arrow functions like this thanks to Redux Thunk.
+    dispatch(partnersLoading()); //Once web browser has obtained the partners data from the server, it will then go to the partnersLoading Action Creator (this will display the loading circle)
+
+    //This is a call to Fetch. We must give Fetch a URL as a parameter. baseUrl + partners is the location of the resource that we want
+    return fetch(baseUrl +"partners")
+            .then(response => {
+                if (response.ok) {
+                    return response; //The response will then continue in the Promise chain (on line 259)
+                } else { //This is if the response is not okay (there is an error)
+                    const error= new Error(`Error ${response.status}: ${response.statusText}`); //Status and Status Text are built in responses from Fetch. They will make our error message more informative
+                    error.response = response;
+                    throw error; //Will send the error straight to the catch method (error function) because of the JavaScript throw keyword
+                }
+                },
+                //A Promise can resolve or reject and we can add a second callback function to the then method to handle a rejected promise (we did not get a response from the server)
+                //This error will be displayed when the server gives no response (neither good or bad)
+                error => {
+                    const errMess = new Error(error.message);
+                    throw errMess;
+                }
+            )
+           .then(response => response.json()) //Call to Fetch will return a JavaScript Promise. The .json() method will convert the response from JSON to JavaScript. This will be the array of partners.
+           //Array of partners is returned from the above .then() method, which is why another .then() method is chained here (code below). partners is the array of partners that will be dispatched to the addPartners Action Creator to be used as its payload.
+           .then(partners => dispatch(addPartners(partners)))
+           .catch(error => dispatch(partnersFailed(error.message)));
+};

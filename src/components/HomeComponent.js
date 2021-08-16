@@ -21,7 +21,7 @@ function RenderCard({item, isLoading, errMess}) {
         <FadeTransform 
             in
             transformProps={{
-                exitTransform: "scale(0.5) translateY(50%)"
+                exitTransform: "scale(0.25) translateY(100%)"
             }} 
             >
             <Card>
@@ -44,7 +44,7 @@ function Home(props) {
                 {/*col-md means that the 3 columns will take up a third of the row, but for small viewports they will take up a full row and stack on top of each other */}
                 {/*m-1 means marginal spacing */}
                 <div className="col-md m-1">
-                    {/*Passing in the itemp prop. We passed in the featured campsite, promotion and partners into the Home Component from the Main Component */}
+                    {/*Passing in the item prop. We passed in the featured campsite, promotion and partners into the Home Component from the Main Component */}
                     {/*We are retrieving these featured campsite, promotion and partner here in these code */}
                     {/*This RenderCard (this is a Functional Presentational Component declared in lines 6-16) creates a card with all the properties of the featured campsite, promotion and partner: image, name, description */}
                     <RenderCard 
@@ -64,7 +64,11 @@ function Home(props) {
                 </div>
 
                 <div className="col-md m-1">
-                    <RenderCard item={props.partner} />
+                    <RenderCard 
+                        item={props.partner} 
+                        isLoading= {props.partnersLoading}
+                        errMess= {props.partnersErrMess}
+                    />
                 </div>
             </div>
             

@@ -1,19 +1,10 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
-
+import {Loading} from "./LoadingComponent"; //Importing the Loading component
+import {baseUrl} from "../shared/baseUrl"; //Importing baseUrl from the shared folder
 
 function About(props) {
-
-    const partners = props.partners.map(partner => {
-        return (
-            <Media tag="li" key={partner.id}>
-                {/*Rendering the RenderPartner component in this Media component.  */}
-                {/*We are passing in the current partner object as a prop to the RenderPartner component. The name of this partner object is "partner" (its name is to the left of the equal sign). We dont have to call it partner, we could call it props, but in RenderPartners function, we would be destructuring props and not partners (tried this and it works) */}
-                <RenderPartner partner={partner} />
-            </Media>
-        );
-    });
 
     //RenderPartner Functional Component. Desconstruct a property named partner from the props object that is being passed into this RenderPartner Functional component
     function RenderPartner({partner}) {
@@ -21,7 +12,7 @@ function About(props) {
             return(
                 <React.Fragment>
                     {/*Self-Closing Media component */}
-                    <Media object src={partner.image} alt={partner.name} width="150" /> 
+                    <Media object src={baseUrl + partner.image} alt={partner.name} width="150" /> 
                 
                     <Media body className="ml-5 mb-4"> {/*Media component with boolean attribute of body */}
                         <Media heading>
@@ -41,6 +32,44 @@ function About(props) {
                 <div></div>
             );
         }
+    }
+
+    //PartnerList Functional Component. 
+    function PartnerList(props) {
+        const partners = props.partners.partners.map(partner => { //Since we didn't deconstruct the props out (we would do this by placing {partners} in the parameter list in line 38), we have to use props.partners.partners to refer to the partners array in the partners object. If we did the deconstruction in the parameter list, we could write in this line "partners.map"
+            return (
+                <Media tag="li" key={partner.id}>
+                    {/*Rendering the RenderPartner component in this Media component.  */}
+                    {/*We are passing in the current partner object as a prop to the RenderPartner component. The name of this partner object is "partner" (its name is to the left of the equal sign). We dont have to call it partner, we could call it props, but in RenderPartners function, we would be destructuring props and not partners (tried this and it works) */}
+                    <RenderPartner partner={partner} />
+                </Media>
+            );
+        });
+
+        //If statement that will handle if the partners data is loading by returning the <Loading /> component. Only returns this component and nothing else
+        //When partners data is loading, display loading symbol
+        if(props.partners.isLoading) { //This isLoading is from the partners state in partners.js. It was passed in the to AboutComponent in the MainComponent.js file (line 152): <Route exact path="/aboutus" render={() => <About partners={this.props.partners} />} />
+            return <Loading />
+        }
+
+        //If statement that will handle if there is an error message while trying to load
+        if(props.partners.errMess) { //This is from the errMess in the partners state in the partners.js file (line 10)
+            return (
+            <div className="col">
+                <h4>{props.partners.errMess}</h4> {/*Returning the error message to be displayed to the user */}
+            </div>
+            );
+        }
+ 
+        //Displaying information about the Partner after the page has loaded (isLoading) and there are no errors (errMess)
+        //Need a return statement so the function will not return undefined (nothing with show up in the web browser). Return statement is needed when inside of functional components
+        return (
+        <div className="col mt-4">
+            <Media list>
+                {partners}
+            </Media>
+        </div>
+        );
     }
 
     return (
@@ -95,11 +124,9 @@ function About(props) {
                 <div className="col-12">
                     <h3>Community Partners</h3>
                 </div>
-                <div className="col mt-4">
-                    <Media list>
-                        {partners}
-                    </Media>
-                </div>
+
+                {/*Passing in the prop partners={props.partners} to the PartnerList component. The information from the ParnterList component will be displayed in this section of the webpage */}
+                <PartnerList partners={props.partners} />
             </div>
         </div>
     );
